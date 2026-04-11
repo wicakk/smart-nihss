@@ -38,6 +38,37 @@
     .dark .opt-label:hover { border-color: #4a6fa5; background-color: #252d3d; }
     .dark .opt-label.selected { border-color: #3b82f6; background-color: rgba(59,130,246,0.12); color: #93c5fd; }
 
+    /* ── ERROR STATE ── */
+    .card-error {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
+      animation: shakeOnce 0.35s ease;
+    }
+    .dark .card-error {
+      border-color: #ef4444 !important;
+      box-shadow: 0 0 0 3px rgba(239,68,68,0.2);
+    }
+    @keyframes shakeOnce {
+      0%   { transform: translateX(0); }
+      20%  { transform: translateX(-5px); }
+      40%  { transform: translateX(5px); }
+      60%  { transform: translateX(-4px); }
+      80%  { transform: translateX(4px); }
+      100% { transform: translateX(0); }
+    }
+    .error-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #ef4444;
+      background: rgba(239,68,68,0.1);
+      border-radius: 6px;
+      padding: 2px 8px;
+    }
+    .dark .error-badge { background: rgba(239,68,68,0.18); }
+
     .score-bar-track { background-color: #e2e8f0; }
     .dark .score-bar-track { background-color: #1e2433; }
 
@@ -64,7 +95,6 @@
     .nav-bg    { background-color: #ffffff; border-color: #e2e8f0; }
     .fixed-bg  { background-color: #ffffff; border-color: #e2e8f0; }
 
-    /* modal slide up */
     @keyframes slideUp {
       from { transform: translateY(40px); opacity: 0; }
       to   { transform: translateY(0);    opacity: 1; }
@@ -78,9 +108,7 @@
 
 <body class="min-h-screen font-sans antialiased">
 
-<!-- ═══════════════════════════════════════
-     NAV
-════════════════════════════════════════ -->
+<!-- NAV -->
 <nav class="nav-bg border-b sticky top-0 z-50 transition-colors duration-300">
   <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
     <div class="flex items-center gap-3">
@@ -103,9 +131,7 @@
   </div>
 </nav>
 
-<!-- ═══════════════════════════════════════
-     MAIN SCROLL AREA
-════════════════════════════════════════ -->
+<!-- MAIN -->
 <main class="max-w-xl mx-auto px-4 pt-4 pb-52 space-y-3">
 
   <!-- DATE TIME -->
@@ -117,11 +143,21 @@
 
   <!-- QUESTIONS -->
   <template x-for="(section, si) in questions" :key="si">
-    <div class="card-bg border rounded-2xl overflow-hidden transition-colors duration-300 fade-up" :style="`animation-delay:${si * 30}ms`">
+    <div class="card-bg border rounded-2xl overflow-hidden transition-all duration-300 fade-up"
+      :style="`animation-delay:${si * 30}ms`"
+      :class="[showErrors && answers[section.id] === undefined ? 'card-error' : '']"
+      :id="'section-' + section.id">
+
       <div class="header-bg border-b px-4 py-3 flex items-center gap-2.5">
         <span class="w-6 h-6 rounded-lg bg-blue-600 text-white text-xs font-bold font-mono flex items-center justify-center flex-shrink-0" x-text="section.code"></span>
-        <span class="text-sm font-extrabold" x-text="section.label"></span>
+        <span class="text-sm font-extrabold flex-1" x-text="section.label"></span>
+        <!-- Error badge -->
+        <span x-show="showErrors && answers[section.id] === undefined" class="error-badge">
+          <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
+          Wajib diisi
+        </span>
       </div>
+
       <div class="p-4 space-y-2">
         <p x-show="section.instruction" class="text-xs font-bold leading-relaxed mb-1" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" x-text="section.instruction"></p>
         <template x-for="(opt, oi) in section.options" :key="oi">
@@ -144,7 +180,7 @@
     </div>
   </template>
 
-  <!-- ─── HISTORY SECTION ─── -->
+  <!-- HISTORY SECTION -->
   <div x-show="history.length > 0" class="pt-2 space-y-3">
     <div class="flex items-center gap-2">
       <div class="h-px flex-1" :class="darkMode ? 'bg-gray-800' : 'bg-gray-200'"></div>
@@ -181,9 +217,7 @@
 
 </main>
 
-<!-- ═══════════════════════════════════════
-     FIXED BOTTOM SCORE
-════════════════════════════════════════ -->
+<!-- FIXED BOTTOM SCORE -->
 <div class="fixed bottom-0 left-0 right-0 z-40">
   <div class="max-w-xl mx-auto">
     <div class="fixed-bg border-t px-4 pt-3 pb-4 transition-colors duration-300 bg-blue-500 my-3 rounded-2xl shadow-lg">
@@ -216,12 +250,12 @@
           :class="darkMode ? 'border-gray-700 text-gray-400 hover:bg-gray-800 hover:text-gray-200' : 'border-gray-200 text-gray-200 hover:bg-gray-50 hover:text-gray-700'">
           Reset
         </button>
-        <button @click="saveResult()" :disabled="answeredCount < 15"
+        <button @click="trySave()"
           class="flex-[2] py-2.5 rounded-xl text-sm font-semibold transition-all"
           :class="answeredCount >= 15
             ? 'bg-blue-600 hover:bg-blue-700 text-white'
-            : (darkMode ? 'bg-gray-800 text-gray-600 cursor-not-allowed' : 'bg-white text-gray-400 cursor-not-allowed')">
-          <span x-show="answeredCount < 15">Isi semua item (<span x-text="15 - answeredCount"></span> lagi)</span>
+            : (darkMode ? 'bg-gray-800 text-gray-400 hover:bg-gray-700' : 'bg-white/20 text-white hover:bg-white/30')">
+          <span x-show="answeredCount < 15">Simpan — <span x-text="15 - answeredCount"></span> item belum diisi</span>
           <span x-show="answeredCount >= 15">Simpan Hasil</span>
         </button>
       </div>
@@ -229,9 +263,7 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     DETAIL MODAL
-════════════════════════════════════════ -->
+<!-- DETAIL MODAL -->
 <div x-show="showModal" x-cloak
   class="fixed inset-0 z-50 flex items-end justify-center"
   style="background:rgba(0,0,0,0.55)"
@@ -239,7 +271,6 @@
 
   <div class="card-bg border-t rounded-t-3xl w-full max-w-xl max-h-[88vh] overflow-y-auto slide-up transition-colors duration-300">
 
-    <!-- Modal header -->
     <div class="sticky top-0 z-10 flex items-start justify-between px-5 py-4 border-b transition-colors duration-300"
       :class="darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'">
       <div>
@@ -260,7 +291,6 @@
 
     <div class="px-5 py-4 space-y-4">
 
-      <!-- Chart -->
       <div class="rounded-2xl p-4 transition-colors" :class="darkMode ? 'bg-gray-800/50' : 'bg-gray-50'">
         <p class="text-xs font-semibold font-mono uppercase tracking-widest mb-3" :class="darkMode ? 'text-gray-500' : 'text-gray-400'">Profil Skor per Domain</p>
         <div style="position:relative;height:200px">
@@ -268,7 +298,6 @@
         </div>
       </div>
 
-      <!-- Severity table -->
       <div class="rounded-2xl overflow-hidden border transition-colors" :class="darkMode ? 'border-gray-800' : 'border-gray-100'">
         <div class="px-4 py-3 border-b" :class="darkMode ? 'bg-gray-800/50 border-gray-800' : 'bg-gray-50 border-gray-100'">
           <p class="text-xs font-semibold font-mono uppercase tracking-widest" :class="darkMode ? 'text-gray-500' : 'text-gray-400'">Klasifikasi Keparahan</p>
@@ -298,7 +327,6 @@
         </table>
       </div>
 
-      <!-- Detail items -->
       <div>
         <p class="text-xs font-semibold font-mono uppercase tracking-widest mb-3" :class="darkMode ? 'text-gray-600' : 'text-gray-400'">Rincian 15 Item</p>
         <div class="space-y-0">
@@ -318,7 +346,6 @@
         </div>
       </div>
 
-      <!-- Download button -->
       <button @click="downloadReport()"
         class="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-all">
         Unduh Laporan
@@ -328,9 +355,6 @@
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════
-     ALPINE JS APP
-════════════════════════════════════════ -->
 <script>
 function nihssApp() {
   return {
@@ -341,6 +365,7 @@ function nihssApp() {
     selectedItem: null,
     currentDatetime: '',
     chartInstance: null,
+    showErrors: false,   // ← NEW: tampilkan highlight error
 
     severityRows: [
       { label: 'Ringan',      range: '0 – 4',   prognosis: 'Baik',         color: '#22c55e' },
@@ -402,6 +427,10 @@ function nihssApp() {
 
     setAnswer(id, optIdx) {
       this.answers = { ...this.answers, [id]: optIdx }
+      // Hilangkan error highlight untuk item ini setelah diisi
+      if (this.showErrors && this.answeredCount === 15) {
+        this.showErrors = false
+      }
     },
 
     get totalScore() {
@@ -459,6 +488,24 @@ function nihssApp() {
       return '#94a3b8'
     },
 
+    // ← NEW: coba simpan, jika belum lengkap tampilkan error & scroll ke item pertama yang kosong
+    trySave() {
+      if (this.answeredCount >= 15) {
+        this.saveResult()
+        return
+      }
+      // Aktifkan highlight error
+      this.showErrors = true
+      // Scroll ke item kosong pertama
+      this.$nextTick(() => {
+        const firstEmpty = this.questions.find(q => this.answers[q.id] === undefined)
+        if (firstEmpty) {
+          const el = document.getElementById('section-' + firstEmpty.id)
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      })
+    },
+
     saveResult() {
       const now = new Date()
       const datetime = now.toLocaleString('id-ID', {
@@ -474,12 +521,16 @@ function nihssApp() {
       this.history.push({ datetime, total: this.totalScore, category: this.categoryLabel, details })
       this.saveHistory()
       this.answers = {}
+      this.showErrors = false
       this.$nextTick(() => {
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
       })
     },
 
-    resetAll() { this.answers = {} },
+    resetAll() {
+      this.answers = {}
+      this.showErrors = false
+    },
 
     showDetail(item) {
       this.selectedItem = item
