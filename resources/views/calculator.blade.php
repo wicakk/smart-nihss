@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script>
     tailwind.config = {
@@ -38,7 +39,6 @@
     .dark .opt-label:hover { border-color: #4a6fa5; background-color: #252d3d; }
     .dark .opt-label.selected { border-color: #3b82f6; background-color: rgba(59,130,246,0.12); color: #93c5fd; }
 
-    /* ── ERROR STATE ── */
     .card-error {
       border-color: #ef4444 !important;
       box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
@@ -108,7 +108,6 @@
 
 <body class="min-h-screen font-sans antialiased">
 
-<!-- NAV -->
 <nav class="nav-bg border-b sticky top-0 z-50 transition-colors duration-300">
   <div class="max-w-xl mx-auto px-4 h-14 flex items-center justify-between">
     <div class="flex items-center gap-3">
@@ -131,17 +130,14 @@
   </div>
 </nav>
 
-<!-- MAIN -->
 <main class="max-w-xl mx-auto px-4 pt-4 pb-52 space-y-3">
 
-  <!-- DATE TIME -->
   <div class="card-bg border rounded-2xl px-4 py-3 flex items-center gap-2.5 transition-colors duration-300">
     <svg class="w-4 h-4 flex-shrink-0" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
     <span class="text-xs font-bold font-mono" :class="darkMode ? 'text-gray-400' : 'text-gray-500'" x-text="currentDatetime"></span>
     <span class="text-xs ml-auto font-mono" :class="darkMode ? 'text-gray-600' : 'text-gray-300'">WIB</span>
   </div>
 
-  <!-- QUESTIONS -->
   <template x-for="(section, si) in questions" :key="si">
     <div class="card-bg border rounded-2xl overflow-hidden transition-all duration-300 fade-up"
       :style="`animation-delay:${si * 30}ms`"
@@ -151,7 +147,6 @@
       <div class="header-bg border-b px-4 py-3 flex items-center gap-2.5">
         <span class="w-6 h-6 rounded-lg bg-blue-600 text-white text-xs font-bold font-mono flex items-center justify-center flex-shrink-0" x-text="section.code"></span>
         <span class="text-sm font-extrabold flex-1" x-text="section.label"></span>
-        <!-- Error badge -->
         <span x-show="showErrors && answers[section.id] === undefined" class="error-badge">
           <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg>
           Wajib diisi
@@ -161,7 +156,7 @@
       <div class="p-4 space-y-2">
         <p x-show="section.instruction" class="text-xs font-bold leading-relaxed mb-1" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" x-text="section.instruction"></p>
         <template x-for="(opt, oi) in section.options" :key="oi">
-          <label class="opt-label flex items-center gap-3 px-3 py-3 rounded-xl border "
+          <label class="opt-label flex items-center gap-3 px-3 py-3 rounded-xl border"
             :class="[answers[section.id] === oi ? 'selected' : '', darkMode ? 'border-gray-700' : 'border-gray-200']"
             @click="setAnswer(section.id, oi)">
             <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all"
@@ -180,7 +175,6 @@
     </div>
   </template>
 
-  <!-- HISTORY SECTION -->
   <div x-show="history.length > 0" class="pt-2 space-y-3">
     <div class="flex items-center gap-2">
       <div class="h-px flex-1" :class="darkMode ? 'bg-gray-800' : 'bg-gray-200'"></div>
@@ -217,12 +211,9 @@
 
 </main>
 
-<!-- FIXED BOTTOM SCORE -->
 <div class="fixed bottom-0 left-0 right-0 z-40">
   <div class="max-w-xl mx-auto">
     <div class="fixed-bg border-t px-4 pt-3 pb-4 transition-colors duration-300 bg-blue-500 my-3 rounded-2xl shadow-lg">
-
-      <!-- Score row -->
       <div class="flex items-center justify-between mb-2.5">
         <div>
           <p class="text-xs font-semibold uppercase tracking-widest font-mono mb-1" :class="darkMode ? 'text-gray-600' : 'text-gray-200'">Total Skor NIHSS =</p>
@@ -237,13 +228,9 @@
           <p class="text-xs font-mono" :class="darkMode ? 'text-gray-600' : 'text-gray-200'" x-text="answeredCount + '/15 item terjawab'"></p>
         </div>
       </div>
-
-      <!-- Progress bar -->
       <div class="score-bar-track rounded-full h-1.5 mb-3 overflow-hidden">
         <div class="h-full rounded-full transition-all duration-500" :class="barColor" :style="'width:' + Math.min((totalScore/42)*100,100) + '%'"></div>
       </div>
-
-      <!-- Action buttons -->
       <div class="flex gap-2.5">
         <button @click="resetAll()"
           class="flex-1 py-2.5 rounded-xl border text-sm font-semibold transition-all"
@@ -270,7 +257,6 @@
   @click.self="showModal = false">
 
   <div class="card-bg border-t rounded-t-3xl w-full max-w-xl max-h-[88vh] overflow-y-auto slide-up transition-colors duration-300">
-
     <div class="sticky top-0 z-10 flex items-start justify-between px-5 py-4 border-b transition-colors duration-300"
       :class="darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'">
       <div>
@@ -290,7 +276,6 @@
     </div>
 
     <div class="px-5 py-4 space-y-4">
-
       <div class="rounded-2xl p-4 transition-colors" :class="darkMode ? 'bg-gray-800/50' : 'bg-gray-50'">
         <p class="text-xs font-semibold font-mono uppercase tracking-widest mb-3" :class="darkMode ? 'text-gray-500' : 'text-gray-400'">Profil Skor per Domain</p>
         <div style="position:relative;height:200px">
@@ -346,11 +331,14 @@
         </div>
       </div>
 
-      <button @click="downloadReport()"
-        class="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-all">
-        Unduh Laporan
+      <!-- Tombol unduh PDF -->
+      <button @click="downloadPDF()" :disabled="pdfLoading"
+        class="w-full py-3 rounded-2xl text-sm font-bold transition-all flex items-center justify-center gap-2"
+        :class="pdfLoading ? 'bg-blue-400 cursor-wait text-white' : 'bg-blue-600 hover:bg-blue-700 text-white'">
+        <svg x-show="!pdfLoading" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <svg x-show="pdfLoading" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path></svg>
+        <span x-text="pdfLoading ? 'Membuat PDF...' : 'Unduh Laporan PDF'"></span>
       </button>
-
     </div>
   </div>
 </div>
@@ -365,46 +353,47 @@ function nihssApp() {
     selectedItem: null,
     currentDatetime: '',
     chartInstance: null,
-    showErrors: false,   // ← NEW: tampilkan highlight error
+    showErrors: false,
+    pdfLoading: false,
 
     severityRows: [
-      { label: 'Ringan',      range: '0 – 4',   prognosis: 'Baik',         color: '#22c55e' },
-      { label: 'Sedang',      range: '5 – 14',  prognosis: 'Sedang',       color: '#eab308' },
-      { label: 'Berat',       range: '15 – 24', prognosis: 'Kurang baik',  color: '#f97316' },
-      { label: 'Sangat Berat',range: '25 – 42', prognosis: 'Buruk',        color: '#ef4444' },
+      { label: 'Ringan',      range: '0 - 4',   prognosis: 'Baik',         color: '#22c55e' },
+      { label: 'Sedang',      range: '5 - 14',  prognosis: 'Sedang',       color: '#eab308' },
+      { label: 'Berat',       range: '15 - 24', prognosis: 'Kurang baik',  color: '#f97316' },
+      { label: 'Sangat Berat',range: '25 - 42', prognosis: 'Buruk',        color: '#ef4444' },
     ],
 
     questions: [
       { id:'1a', code:'1a', label:'Tingkat Kesadaran', instruction:'Nilai kesadaran pasien secara umum.',
         options:[{score:0,label:'Sadar penuh'},{score:1,label:'Somnolen'},{score:2,label:'Stupor'},{score:3,label:'Koma'}] },
-      { id:'1b', code:'1b', label:'Menjawab Pertanyaan', instruction:'Tanyakan bulan dan usia pasien. Yang dinilai adalah jawaban pertama, pemeriksa tidak diperkenankan membantu pasien dengan verbal atau non verbal',
+      { id:'1b', code:'1b', label:'Menjawab Pertanyaan', instruction:'Tanyakan bulan dan usia pasien.',
         options:[{score:0,label:'Benar semua (2 pertanyaan)'},{score:1,label:'1 benar / ETT / disartria'},{score:2,label:'Salah semua / afasia / stupor / koma'}] },
-      { id:'1c', code:'1c', label:'Mengikuti Perintah', instruction:'Berikan 2 perintah sederhana, membuka dan menutup mata, menggenggam tangan dan melepaskannya atau 2 perintah lain',
+      { id:'1c', code:'1c', label:'Mengikuti Perintah', instruction:'Berikan 2 perintah sederhana.',
         options:[{score:0,label:'Mampu melakukan 2 perintah'},{score:1,label:'Mampu melakukan 1 perintah'},{score:2,label:'Tidak mampu melakukan perintah'}] },
       { id:'2', code:'2', label:'Gaze : gerakan mata konyugat horizontal', instruction:'',
         options:[{score:0,label:'Normal'},{score:1,label:'Abnormal pada 1 mata'},{score:2,label:'Deviasi konjugat kuat atau paresis konjugat pada 2 mata'}] },
-      { id:'3', code:'3', label:'Visual — Lapang PandangVisual : lapang pandang pada tes konfrontasi', instruction:'Tes konfrontasi lapang pandang.',
+      { id:'3', code:'3', label:'Visual : lapang pandang pada tes konfrontasi', instruction:'Tes konfrontasi lapang pandang.',
         options:[{score:0,label:'Tidak ada gangguan'},{score:1,label:'Kuadrianopsia'},{score:2,label:'Hemianopia total'},{score:3,label:'Hemianopia bilateral / buta kortikal'}] },
-      { id:'4', code:'4', label:'Paresis wajah', instruction:'Anjurkan pasien menyeringai atau mengangkat alis dan menutup mata',
-        options:[{score:0,label:'Normal'},{score:1,label:'Paresis wajah ringan (lipatan nasolabial datar, senyum asimetris)'},{score:2,label:'Paresis wajah parsial (paresis wajah bawah total atau hampir total)'},{score:3,label:'Paresis wajah total (paresis wajah sesisi atau 2 sisi)'}] },
-      { id:'5a', code:'5a', label:'Motorik Lengan Kiri', instruction:'Anjurkan pasien mengangkat lengan hingga 45° bila tidur berbaring atau 90° bila posisi duduk. Bila pasien afasia berikan perintah menggunakan pantomime atau peragaan.',
-        options:[{score:0,label:'Mampu mengangkat lengan minimal 10 detik'},{score:1,label:'Lengan terjatuh sebelum 10 detik'},{score:2,label:'Tidak mampu mengangkat secara penuh 90° atau 45°'},{score:3,label:'Tidak mampu mengangkat, hanya bergeser'},{score:4,label:'Tidak ada gerakan'}] },
-      { id:'5b', code:'5b', label:'Motorik Lengan Kanan', instruction:'Anjurkan pasien mengangkat lengan hingga 45° bila tidur berbaring atau 90° bila posisi duduk. Bila pasien afasia berikan perintah menggunakan pantomime atau peragaan.',
-        options:[{score:0,label:'Mampu mengangkat lengan minimal 10 detik'},{score:1,label:'Lengan terjatuh sebelum 10 detik'},{score:2,label:'Tidak mampu mengangkat secara penuh 90° atau 45°'},{score:3,label:'Tidak mampu mengangkat, hanya bergeser'},{score:4,label:'Tidak ada gerakan'}] },
-      { id:'6a', code:'6a', label:'Motorik Tungkai Kiri', instruction:'Anjurkan pasien tidur terlentang dan mengangkat tungkai 30°',
-        options:[{score:0,label:'Mampu mengangkat tungkai 30° minimal 5 detik'},{score:1,label:'Tungkai jatuh ke tempat tidur pada akhir detik ke-5 secara perlahan'},{score:2,label:'Tungkai jatuh sebelum 5 detik, ada usaha melawan gravitasi'},{score:3,label:'Tidak mampu melawan gravitasi'},{score:4,label:'Tidak ada gerakan'}] },
-      { id:'6b', code:'6b', label:'Motorik Tungkai Kanan', instruction:'Anjurkan pasien tidur terlentang dan mengangkat tungkai 30°',
-        options:[{score:0,label:'Mampu mengangkat tungkai 30° minimal 5 detik'},{score:1,label:'Tungkai jatuh ke tempat tidur pada akhir detik ke-5 secara perlahan'},{score:2,label:'Tungkai jatuh sebelum 5 detik, ada usaha melawan gravitasi'},{score:3,label:'Tidak mampu melawan gravitasi'},{score:4,label:'Tidak ada gerakan'}] },
+      { id:'4', code:'4', label:'Paresis wajah', instruction:'Anjurkan pasien menyeringai atau mengangkat alis dan menutup mata.',
+        options:[{score:0,label:'Normal'},{score:1,label:'Paresis wajah ringan'},{score:2,label:'Paresis wajah parsial'},{score:3,label:'Paresis wajah total'}] },
+      { id:'5a', code:'5a', label:'Motorik Lengan Kiri', instruction:'Anjurkan pasien mengangkat lengan hingga 45 derajat bila tidur berbaring atau 90 derajat bila posisi duduk.',
+        options:[{score:0,label:'Mampu mengangkat lengan minimal 10 detik'},{score:1,label:'Lengan terjatuh sebelum 10 detik'},{score:2,label:'Tidak mampu mengangkat secara penuh'},{score:3,label:'Tidak mampu mengangkat, hanya bergeser'},{score:4,label:'Tidak ada gerakan'}] },
+      { id:'5b', code:'5b', label:'Motorik Lengan Kanan', instruction:'Anjurkan pasien mengangkat lengan hingga 45 derajat bila tidur berbaring atau 90 derajat bila posisi duduk.',
+        options:[{score:0,label:'Mampu mengangkat lengan minimal 10 detik'},{score:1,label:'Lengan terjatuh sebelum 10 detik'},{score:2,label:'Tidak mampu mengangkat secara penuh'},{score:3,label:'Tidak mampu mengangkat, hanya bergeser'},{score:4,label:'Tidak ada gerakan'}] },
+      { id:'6a', code:'6a', label:'Motorik Tungkai Kiri', instruction:'Anjurkan pasien tidur terlentang dan mengangkat tungkai 30 derajat.',
+        options:[{score:0,label:'Mampu mengangkat tungkai 30 derajat minimal 5 detik'},{score:1,label:'Tungkai jatuh pada akhir detik ke-5 secara perlahan'},{score:2,label:'Tungkai jatuh sebelum 5 detik'},{score:3,label:'Tidak mampu melawan gravitasi'},{score:4,label:'Tidak ada gerakan'}] },
+      { id:'6b', code:'6b', label:'Motorik Tungkai Kanan', instruction:'Anjurkan pasien tidur terlentang dan mengangkat tungkai 30 derajat.',
+        options:[{score:0,label:'Mampu mengangkat tungkai 30 derajat minimal 5 detik'},{score:1,label:'Tungkai jatuh pada akhir detik ke-5 secara perlahan'},{score:2,label:'Tungkai jatuh sebelum 5 detik'},{score:3,label:'Tidak mampu melawan gravitasi'},{score:4,label:'Tidak ada gerakan'}] },
       { id:'7', code:'7', label:'Ataksia Anggota Badan', instruction:'Menggunakan test unjuk jari hidung.',
         options:[{score:0,label:'Tidak ada ataksia'},{score:1,label:'Ataksia pada satu ekstremitas'},{score:2,label:'Ataksia pada dua atau lebih ekstremitas'}] },
-      { id:'8', code:'8', label:'Sensorik', instruction:'Lakukan tes pada seluruh tubuh; tungkai. Lengan, badan, dan wajah. Pasien afasia diberi nilai 1. Pasien stupor atau koma diberi nilai 2',
-        options:[{score:0,label:'Normal'},{score:1,label:'Gangguan sensori ringan-sedang (masih merasa bila disentuh)'},{score:2,label:'Gangguan sensori berat atau total'}] },
-      { id:'9', code:'9', label:'Kemampuan berbahasa', instruction:'Anjurkan pasien untuk menjelaskan suatu gambar atau membaca suatu tulisan. Bila pasien mengalami kebutaan, letakan suatu benda ditangan pasien dan anjurkan untuk menjelaskan benda tersebut.',
+      { id:'8', code:'8', label:'Sensorik', instruction:'Lakukan tes pada seluruh tubuh.',
+        options:[{score:0,label:'Normal'},{score:1,label:'Gangguan sensori ringan-sedang'},{score:2,label:'Gangguan sensori berat atau total'}] },
+      { id:'9', code:'9', label:'Kemampuan berbahasa', instruction:'Anjurkan pasien menjelaskan gambar atau membaca tulisan.',
         options:[{score:0,label:'Normal'},{score:1,label:'Afasia ringan hingga sedang'},{score:2,label:'Afasia berat'},{score:3,label:'Mute, afasia global, koma'}] },
       { id:'10', code:'10', label:'Disartria', instruction:'',
         options:[{score:0,label:'Normal'},{score:1,label:'Disartria ringan'},{score:2,label:'Disartria berat'}] },
       { id:'11', code:'11', label:'Neglect / Inatensi', instruction:'',
-        options:[{score:0,label:'Tidak ada neglect'},{score:1,label:'Tidak ada atensi pada salah satu modalitas (visual, tactile, auditory, spatial, personal)'},{score:2,label:'Tidak ada atensi pada lebih dari satu modalitas'}] },
+        options:[{score:0,label:'Tidak ada neglect'},{score:1,label:'Tidak ada atensi pada salah satu modalitas'},{score:2,label:'Tidak ada atensi pada lebih dari satu modalitas'}] },
     ],
 
     init() {
@@ -427,10 +416,7 @@ function nihssApp() {
 
     setAnswer(id, optIdx) {
       this.answers = { ...this.answers, [id]: optIdx }
-      // Hilangkan error highlight untuk item ini setelah diisi
-      if (this.showErrors && this.answeredCount === 15) {
-        this.showErrors = false
-      }
+      if (this.showErrors && this.answeredCount === 15) this.showErrors = false
     },
 
     get totalScore() {
@@ -446,7 +432,7 @@ function nihssApp() {
 
     get categoryLabel() {
       const s = this.totalScore
-      if (this.answeredCount === 0) return 'Belum Di isi'
+      if (this.answeredCount === 0) return 'Belum Diisi'
       if (s < 5)   return 'Ringan'
       if (s <= 14) return 'Sedang'
       if (s <= 24) return 'Berat'
@@ -481,22 +467,16 @@ function nihssApp() {
     },
 
     getCategoryColor(cat) {
-      if (cat === 'Ringan')       return this.darkMode ? '#22c55e' : '#16a34a'
-      if (cat === 'Sedang')       return this.darkMode ? '#eab308' : '#ca8a04'
-      if (cat === 'Berat')        return this.darkMode ? '#f97316' : '#ea580c'
-      if (cat === 'Sangat Berat') return this.darkMode ? '#ef4444' : '#dc2626'
+      if (cat === 'Ringan')       return '#16a34a'
+      if (cat === 'Sedang')       return '#ca8a04'
+      if (cat === 'Berat')        return '#ea580c'
+      if (cat === 'Sangat Berat') return '#dc2626'
       return '#94a3b8'
     },
 
-    // ← NEW: coba simpan, jika belum lengkap tampilkan error & scroll ke item pertama yang kosong
     trySave() {
-      if (this.answeredCount >= 15) {
-        this.saveResult()
-        return
-      }
-      // Aktifkan highlight error
+      if (this.answeredCount >= 15) { this.saveResult(); return }
       this.showErrors = true
-      // Scroll ke item kosong pertama
       this.$nextTick(() => {
         const firstEmpty = this.questions.find(q => this.answers[q.id] === undefined)
         if (firstEmpty) {
@@ -522,15 +502,10 @@ function nihssApp() {
       this.saveHistory()
       this.answers = {}
       this.showErrors = false
-      this.$nextTick(() => {
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' })
-      })
+      this.$nextTick(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) })
     },
 
-    resetAll() {
-      this.answers = {}
-      this.showErrors = false
-    },
+    resetAll() { this.answers = {}; this.showErrors = false },
 
     showDetail(item) {
       this.selectedItem = item
@@ -548,9 +523,7 @@ function nihssApp() {
       const scores = item.details.map(d => d.score)
       const maxes  = item.details.map(d => d.maxScore || 4)
       const colors = scores.map((s, i) =>
-        s === 0 ? '#22c55e' :
-        s === maxes[i] ? '#ef4444' :
-        s >= 2 ? '#f97316' : '#3b82f6'
+        s === 0 ? '#22c55e' : s === maxes[i] ? '#ef4444' : s >= 2 ? '#f97316' : '#3b82f6'
       )
       this.chartInstance = new Chart(ctx, {
         type: 'bar',
@@ -569,45 +542,252 @@ function nihssApp() {
       })
     },
 
-    downloadReport() {
+    // ══════════════════════════════════════
+    // GENERATE PDF dengan jsPDF
+    // ══════════════════════════════════════
+    async downloadPDF() {
       const item = this.selectedItem
       if (!item) return
-      const catColor = this.getCategoryColor(item.category)
-      const html = `<!DOCTYPE html><html lang="id"><head><meta charset="UTF-8"><title>NIHSS Laporan</title>
-      <style>
-        body{font-family:'Segoe UI',Arial,sans-serif;max-width:700px;margin:40px auto;color:#1a202c;font-size:13px;line-height:1.6}
-        h1{font-size:20px;font-weight:700;margin-bottom:4px}
-        h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:#64748b;margin:24px 0 8px;border-bottom:1px solid #f1f5f9;padding-bottom:6px}
-        table{width:100%;border-collapse:collapse}
-        td,th{padding:8px 10px;border-bottom:1px solid #f1f5f9;font-size:12px;text-align:left}
-        th{color:#94a3b8;font-weight:600;text-transform:uppercase;font-size:10px;letter-spacing:.05em}
-        .badge{display:inline-block;padding:4px 12px;border-radius:20px;font-weight:700;font-size:12px;background:${catColor}18;color:${catColor}}
-        .score-val{font-size:26px;font-weight:700;color:${catColor}}
-        footer{margin-top:32px;color:#94a3b8;font-size:10px;border-top:1px solid #f1f5f9;padding-top:10px}
-      </style></head><body>
-      <h1>Laporan Pemeriksaan NIHSS</h1>
-      <p style="color:#64748b;font-size:12px">RSUP Fatmawati &nbsp;|&nbsp; ${item.datetime}</p>
-      <p style="margin-top:14px"><strong>Total Skor:</strong> <span class="score-val">${item.total}</span><span style="color:#94a3b8">/42</span>
-      &nbsp;<span class="badge">${item.category}</span></p>
-      <h2>Klasifikasi Keparahan</h2>
-      <table><thead><tr><th>Kategori</th><th>Rentang Skor</th><th>Prognosis</th><th>Status</th></tr></thead><tbody>
-      <tr><td style="color:#16a34a;font-weight:700">Ringan</td><td>0–4</td><td>Baik</td><td>${item.category==='Ringan'?'▶ Pasien ini':'—'}</td></tr>
-      <tr><td style="color:#ca8a04;font-weight:700">Sedang</td><td>5–14</td><td>Sedang</td><td>${item.category==='Sedang'?'▶ Pasien ini':'—'}</td></tr>
-      <tr><td style="color:#ea580c;font-weight:700">Berat</td><td>15–24</td><td>Kurang baik</td><td>${item.category==='Berat'?'▶ Pasien ini':'—'}</td></tr>
-      <tr><td style="color:#dc2626;font-weight:700">Sangat Berat</td><td>25–42</td><td>Buruk</td><td>${item.category==='Sangat Berat'?'▶ Pasien ini':'—'}</td></tr>
-      </tbody></table>
-      <h2>Detail Pemeriksaan</h2>
-      <table><thead><tr><th>Kode</th><th>Domain</th><th>Jawaban</th><th>Skor</th></tr></thead><tbody>
-      ${item.details.map(d=>`<tr><td><strong>${d.code}</strong></td><td>${d.label}</td><td>${d.answer}</td>
-      <td style="font-weight:700;color:${d.score===0?'#16a34a':d.score===d.maxScore?'#dc2626':'#ea580c'}">${d.score}</td></tr>`).join('')}
-      </tbody></table>
-      <footer>Dibuat otomatis oleh SMART NIHSS — RSUP Fatmawati</footer>
-      </body></html>`
-      const b = new Blob([html], { type: 'text/html' })
-      const a = document.createElement('a')
-      a.href = URL.createObjectURL(b)
-      a.download = 'NIHSS_' + Date.now() + '.html'
-      a.click()
+
+      this.pdfLoading = true
+      await this.$nextTick()
+
+      try {
+        const { jsPDF } = window.jspdf
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
+
+        const pageW = 210
+        const pageH = 297
+        const marginL = 18
+        const marginR = 18
+        const contentW = pageW - marginL - marginR
+        let y = 0
+
+        // ── Warna berdasarkan kategori ──
+        const catColors = {
+          'Ringan':      [22, 163, 74],
+          'Sedang':      [202, 138, 4],
+          'Berat':       [234, 88, 12],
+          'Sangat Berat':[220, 38, 38],
+        }
+        const catRgb = catColors[item.category] || [100, 116, 139]
+
+        // ══ HEADER BIRU ══
+        doc.setFillColor(37, 99, 235)
+        doc.rect(0, 0, pageW, 38, 'F')
+
+        // Logo kotak putih
+        doc.setFillColor(255, 255, 255)
+        doc.roundedRect(marginL, 10, 18, 18, 3, 3, 'F')
+        doc.setFillColor(37, 99, 235)
+        doc.setFontSize(8)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(37, 99, 235)
+        doc.text('NIHSS', marginL + 9, 21, { align: 'center' })
+
+        // Judul
+        doc.setTextColor(255, 255, 255)
+        doc.setFontSize(15)
+        doc.setFont('helvetica', 'bold')
+        doc.text('SMART NIHSS', marginL + 22, 18)
+        doc.setFontSize(8)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(186, 210, 255)
+        doc.text('RSUP Fatmawati', marginL + 22, 25)
+        doc.text('Laporan Pemeriksaan Stroke', marginL + 22, 31)
+
+        // Tanggal di kanan atas
+        doc.setFontSize(7.5)
+        doc.setTextColor(186, 210, 255)
+        doc.text(item.datetime, pageW - marginR, 25, { align: 'right' })
+
+        y = 50
+
+        // ══ KOTAK SKOR UTAMA ══
+        doc.setFillColor(248, 250, 252)
+        doc.setDrawColor(226, 232, 240)
+        doc.setLineWidth(0.3)
+        doc.roundedRect(marginL, y, contentW, 28, 4, 4, 'FD')
+
+        // Skor besar
+        doc.setFontSize(32)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(...catRgb)
+        doc.text(String(item.total), marginL + 22, y + 20, { align: 'center' })
+        doc.setFontSize(10)
+        doc.setTextColor(148, 163, 184)
+        doc.text('/42', marginL + 34, y + 20)
+
+        // Badge kategori
+        const badgeX = marginL + 55
+        const badgeY = y + 8
+        doc.setFillColor(...catRgb.map(c => Math.min(255, c + 200)))
+        doc.roundedRect(badgeX, badgeY, 38, 8, 2, 2, 'F')
+        doc.setFontSize(8)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(...catRgb)
+        doc.text(item.category, badgeX + 19, badgeY + 5.5, { align: 'center' })
+
+        // Label skor
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(100, 116, 139)
+        doc.text('Total Skor NIHSS', marginL + 22, y + 26, { align: 'center' })
+
+        // Progress bar
+        const barX = badgeX
+        const barY = y + 18
+        const barW = contentW - (badgeX - marginL) - 8
+        doc.setFillColor(226, 232, 240)
+        doc.roundedRect(barX, barY, barW, 3, 1.5, 1.5, 'F')
+        const fillW = Math.min((item.total / 42) * barW, barW)
+        doc.setFillColor(...catRgb)
+        doc.roundedRect(barX, barY, fillW, 3, 1.5, 1.5, 'F')
+
+        y += 36
+
+        // ══ KLASIFIKASI KEPARAHAN ══
+        doc.setFontSize(7.5)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(100, 116, 139)
+        doc.text('KLASIFIKASI KEPARAHAN', marginL, y)
+        y += 5
+
+        const sevData = [
+          { label: 'Ringan',       range: '0 - 4',   prognosis: 'Baik',        rgb: [22, 163, 74]  },
+          { label: 'Sedang',       range: '5 - 14',  prognosis: 'Sedang',      rgb: [202, 138, 4]  },
+          { label: 'Berat',        range: '15 - 24', prognosis: 'Kurang baik', rgb: [234, 88, 12]  },
+          { label: 'Sangat Berat', range: '25 - 42', prognosis: 'Buruk',       rgb: [220, 38, 38]  },
+        ]
+
+        // Header tabel
+        doc.setFillColor(241, 245, 249)
+        doc.rect(marginL, y, contentW, 6, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(100, 116, 139)
+        doc.text('Kategori', marginL + 3, y + 4.2)
+        doc.text('Rentang', marginL + 48, y + 4.2)
+        doc.text('Prognosis', marginL + 80, y + 4.2)
+        doc.text('Status', pageW - marginR - 3, y + 4.2, { align: 'right' })
+        y += 6
+
+        sevData.forEach(row => {
+          const isActive = item.category === row.label
+          if (isActive) {
+            doc.setFillColor(...row.rgb.map(c => Math.min(255, c + 215)))
+            doc.rect(marginL, y, contentW, 7, 'F')
+          }
+          doc.setDrawColor(226, 232, 240)
+          doc.setLineWidth(0.2)
+          doc.line(marginL, y + 7, marginL + contentW, y + 7)
+
+          doc.setFontSize(7.5)
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(...row.rgb)
+          doc.text(row.label, marginL + 3, y + 4.8)
+
+          doc.setFont('helvetica', 'normal')
+          doc.setTextColor(71, 85, 105)
+          doc.text(row.range, marginL + 48, y + 4.8)
+          doc.text(row.prognosis, marginL + 80, y + 4.8)
+
+          if (isActive) {
+            doc.setFont('helvetica', 'bold')
+            doc.setTextColor(...row.rgb)
+            doc.text('Pasien ini', pageW - marginR - 3, y + 4.8, { align: 'right' })
+          }
+          y += 7
+        })
+
+        y += 8
+
+        // ══ RINCIAN 15 ITEM ══
+        doc.setFontSize(7.5)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(100, 116, 139)
+        doc.text('RINCIAN 15 ITEM PEMERIKSAAN', marginL, y)
+        y += 5
+
+        // Header tabel detail
+        doc.setFillColor(241, 245, 249)
+        doc.rect(marginL, y, contentW, 6, 'F')
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'bold')
+        doc.setTextColor(100, 116, 139)
+        doc.text('Kode', marginL + 3, y + 4.2)
+        doc.text('Domain', marginL + 18, y + 4.2)
+        doc.text('Jawaban', marginL + 85, y + 4.2)
+        doc.text('Skor', pageW - marginR - 3, y + 4.2, { align: 'right' })
+        y += 6
+
+        item.details.forEach((d, i) => {
+          // Cek halaman baru
+          if (y > pageH - 30) {
+            doc.addPage()
+            y = 20
+          }
+
+          const rowH = 9
+          if (i % 2 === 0) {
+            doc.setFillColor(248, 250, 252)
+            doc.rect(marginL, y, contentW, rowH, 'F')
+          }
+          doc.setDrawColor(226, 232, 240)
+          doc.setLineWidth(0.15)
+          doc.line(marginL, y + rowH, marginL + contentW, y + rowH)
+
+          // Kode (biru)
+          doc.setFontSize(7)
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(37, 99, 235)
+          doc.text(d.code, marginL + 3, y + 5.8)
+
+          // Label domain
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(30, 41, 59)
+          const labelTxt = doc.splitTextToSize(d.label, 62)
+          doc.text(labelTxt[0], marginL + 18, y + 5.8)
+
+          // Jawaban
+          doc.setFont('helvetica', 'normal')
+          doc.setTextColor(71, 85, 105)
+          const ansTxt = doc.splitTextToSize(d.answer, 56)
+          doc.text(ansTxt[0], marginL + 85, y + 5.8)
+
+          // Skor (warna)
+          const scoreRgb = d.score === 0 ? [22, 163, 74] : d.score >= 3 ? [220, 38, 38] : [234, 88, 12]
+          doc.setFont('helvetica', 'bold')
+          doc.setFontSize(8)
+          doc.setTextColor(...scoreRgb)
+          doc.text(String(d.score), pageW - marginR - 3, y + 5.8, { align: 'right' })
+
+          y += rowH
+        })
+
+        y += 10
+
+        // ══ FOOTER ══
+        if (y > pageH - 20) { doc.addPage(); y = 20 }
+        doc.setDrawColor(226, 232, 240)
+        doc.setLineWidth(0.3)
+        doc.line(marginL, y, pageW - marginR, y)
+        y += 5
+        doc.setFontSize(7)
+        doc.setFont('helvetica', 'normal')
+        doc.setTextColor(148, 163, 184)
+        doc.text('Dibuat otomatis oleh SMART NIHSS - RSUP Fatmawati', marginL, y)
+        doc.text('Halaman 1', pageW - marginR, y, { align: 'right' })
+
+        // Simpan
+        doc.save('NIHSS_Laporan_' + Date.now() + '.pdf')
+
+      } catch (err) {
+        console.error('PDF error:', err)
+        alert('Gagal membuat PDF. Silakan coba lagi.')
+      } finally {
+        this.pdfLoading = false
+      }
     },
 
     saveHistory() {
