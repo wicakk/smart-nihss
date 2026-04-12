@@ -32,7 +32,7 @@
     <!-- LEFT CONTENT (TEXT) -->
     <div>
       <h1 class="text-4xl md:text-5xl font-bold text-blue-900 leading-tight">
-        RSUP Fatmawati <span class="text-blue-600">NIHSS</span>
+        RSUP Fatmawati <span class="text-blue-700">NIHSS & MAP</span>
       </h1>
       <p class="mt-4 text-gray-700 text-lg">
         Platform modern untuk membantu tenaga medis melakukan penilaian stroke secara cepat, akurat, dan efisien.

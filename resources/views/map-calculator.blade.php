@@ -24,10 +24,10 @@
 <style>
   /* Result color classes — Tailwind purge workaround */
   .result-empty  { background-color: #1d4ed8; }
-  .result-normal { background-color: #0d7b5e; }
-  .result-below  { background-color: #854d0e; }
-  .result-above  { background-color: #7c3aed; }
-  .result-danger { background-color: #991b1b; }
+  .result-normal { background-color: #1d4ed8; }
+  .result-below  { background-color: #1d4ed8; }
+  .result-above  { background-color: #1d4ed8; }
+  .result-danger { background-color: #1d4ed8; }
 
   /* Input number hide arrows */
   input[type=number]::-webkit-inner-spin-button,
@@ -37,14 +37,14 @@
   /* Smooth theme transition */
   body { transition: background-color 0.2s, color 0.2s; }
 
-  /* Print styles */
+  /* Print styles — hanya cetak halaman kalkulator */
   @media print {
     body { background: #fff !important; padding-bottom: 0 !important; }
     .no-print { display: none !important; }
-    .tab-content { display: block !important; }
-    #tab-formula, #tab-referensi { page-break-before: always; display: block !important; }
+    #tab-calc { display: block !important; }
+    #tab-formula { display: none !important; }
+    #tab-referensi { display: none !important; }
     .result-area { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-    .formula-block { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
     .sticky { position: static !important; }
   }
 </style>
@@ -65,16 +65,23 @@
       <p class="text-[11px] text-slate-400 dark:text-[#484f58] leading-tight mt-0.5">RSUP Fatmawati</p>
     </div>
   </div>
-  <button onclick="toggleTheme()" id="theme-btn" title="Toggle tema"
-    class="w-9 h-9 rounded-full border border-slate-200 dark:border-[#30363d] bg-slate-50 dark:bg-[#1c2128] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:border-blue-400 transition-colors">
-    <svg id="icon-moon" class="w-4 h-4 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
-    </svg>
-    <svg id="icon-sun" class="w-4 h-4 stroke-current fill-none hidden" stroke-width="1.8" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" r="5"/>
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
-    </svg>
-  </button>
+  <div class="flex items-center gap-3">
+      <button onclick="toggleTheme()" id="theme-btn" title="Toggle tema"
+        class="w-9 h-9 rounded-full border border-slate-200 dark:border-[#30363d] bg-slate-50 dark:bg-[#1c2128] flex items-center justify-center text-slate-500 dark:text-slate-400 hover:border-blue-400 transition-colors">
+        <svg id="icon-moon" class="w-4 h-4 stroke-current fill-none" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+        </svg>
+        <svg id="icon-sun" class="w-4 h-4 stroke-current fill-none hidden" stroke-width="1.8" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="5"/>
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+        </svg>
+      </button>
+      <a href="{{ route('welcome-nihss') }}">
+        <button class="h-9 w-20 rounded-md border border-slate-200 dark:border-[#30363d] bg-blue-500 dark:bg-[#1c2128] flex items-center justify-center text-white dark:text-slate-400 hover:border-blue-400 transition-colors">
+          Beranda
+        </button>
+      </a>
+  </div>
 </header>
 
 <!-- ══ DATETIME BAR ══ -->
@@ -87,16 +94,6 @@
   </div>
   <span class="text-[10px] font-semibold tracking-widest text-slate-400 dark:text-[#484f58]">WIB</span>
 </div>
-
-<!-- ══ TABS ══ -->
-{{-- <div class="mx-4 mt-3 bg-slate-100 dark:bg-[#1c2128] border border-slate-200 dark:border-[#30363d] rounded-xl p-1 flex gap-0.5 no-print">
-  <button class="tab flex-1 py-2 text-xs font-medium rounded-lg transition-all text-blue-600 dark:text-blue-400 bg-white dark:bg-[#1c2128] shadow-sm"
-    onclick="switchTab('calc',this)" data-tab="calc">Kalkulator</button>
-  <button class="tab flex-1 py-2 text-xs font-medium rounded-lg transition-all text-slate-500 dark:text-[#6e7681]"
-    onclick="switchTab('formula',this)" data-tab="formula">Formula</button>
-  <button class="tab flex-1 py-2 text-xs font-medium rounded-lg transition-all text-slate-500 dark:text-[#6e7681]"
-    onclick="switchTab('referensi',this)" data-tab="referensi">Referensi</button>
-</div> --}}
 
 <!-- ══════════════════════════ TAB: KALKULATOR ══════════════════════════ -->
 <div id="tab-calc" class="tab-content">
@@ -156,53 +153,6 @@
     </div>
   </div>
 
-  <!-- Interpretasi Card -->
-  <div class="mx-4 mt-3 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-sm">
-    <div class="px-4 pt-4 pb-1">
-      <p class="text-[10px] font-semibold tracking-[0.1em] uppercase text-slate-400 dark:text-[#484f58] mb-3">Tabel Interpretasi MAP</p>
-      <table class="w-full">
-        <thead>
-          <tr class="border-b border-slate-100 dark:border-[#30363d]">
-            <th class="text-left text-[11px] font-medium text-slate-400 dark:text-[#484f58] pb-2">Kategori</th>
-            <th class="text-right text-[11px] font-medium text-slate-400 dark:text-[#484f58] pb-2">Rentang</th>
-          </tr>
-        </thead>
-        <tbody class="divide-y divide-slate-100 dark:divide-[#30363d]">
-          <tr>
-            <td class="py-2.5 text-sm text-slate-700 dark:text-[#e6edf3] flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-red-500 shrink-0"></span>Kritis rendah
-            </td>
-            <td class="py-2.5 text-right font-mono text-xs text-slate-500 dark:text-[#8b949e]">&lt; 60 mmHg</td>
-          </tr>
-          <tr>
-            <td class="py-2.5 text-sm text-slate-700 dark:text-[#e6edf3] flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-amber-400 shrink-0"></span>Di bawah normal
-            </td>
-            <td class="py-2.5 text-right font-mono text-xs text-slate-500 dark:text-[#8b949e]">60–69 mmHg</td>
-          </tr>
-          <tr>
-            <td class="py-2.5 text-sm text-slate-700 dark:text-[#e6edf3] flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>Normal
-            </td>
-            <td class="py-2.5 text-right font-mono text-xs text-slate-500 dark:text-[#8b949e]">70–100 mmHg</td>
-          </tr>
-          <tr>
-            <td class="py-2.5 text-sm text-slate-700 dark:text-[#e6edf3] flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-violet-500 shrink-0"></span>Di atas normal
-            </td>
-            <td class="py-2.5 text-right font-mono text-xs text-slate-500 dark:text-[#8b949e]">101–109 mmHg</td>
-          </tr>
-          <tr>
-            <td class="py-2.5 text-sm text-slate-700 dark:text-[#e6edf3] flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-red-600 shrink-0"></span>Hipertensi berat
-            </td>
-            <td class="py-2.5 text-right font-mono text-xs text-slate-500 dark:text-[#8b949e]">≥ 110 mmHg</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
   <!-- Tips Klinis Card -->
   <div class="mx-4 mt-3 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl overflow-hidden shadow-sm">
     <div class="px-4 pt-4 pb-2">
@@ -236,77 +186,38 @@
     </div>
   </div>
 
-  <!-- Disclaimer -->
-  {{-- <div class="mx-4 mt-3 bg-amber-50 dark:bg-[#1c1500] border border-amber-200 dark:border-amber-900 rounded-xl px-4 py-3 flex gap-2.5 items-start">
-    <svg class="w-4 h-4 stroke-amber-500 fill-none shrink-0 mt-0.5" stroke-width="1.8" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-    </svg>
-    <span class="text-xs text-amber-800 dark:text-amber-400 leading-relaxed">Kalkulator ini hanya sebagai alat bantu klinis. Hasil harus selalu diverifikasi ulang dan tidak menggantikan penilaian klinis profesional.</span>
-  </div> --}}
-
 </div><!-- /tab-calc -->
 
 <!-- ══════════════════════════ TAB: FORMULA ══════════════════════════ -->
 <div id="tab-formula" class="tab-content hidden">
-
-  <!-- Code block — always dark -->
   <div class="mx-4 mt-3 bg-[#0d1117] border border-[#30363d] rounded-2xl p-5 font-mono text-sm leading-loose">
     <p class="text-[#6e7681]">// Rumus standar Mean Arterial Pressure</p>
     <p class="mt-2">
-      <span class="text-[#79c0ff]">MAP</span>
-      <span class="text-[#ffa657]"> = </span>
-      <span class="text-[#79c0ff]">DBP</span>
-      <span class="text-[#ffa657]"> + ⅓ × ( </span>
-      <span class="text-[#79c0ff]">SBP</span>
-      <span class="text-[#ffa657]"> − </span>
-      <span class="text-[#79c0ff]">DBP</span>
-      <span class="text-[#ffa657]"> )</span>
+      <span class="text-[#79c0ff]">MAP</span><span class="text-[#ffa657]"> = </span><span class="text-[#79c0ff]">DBP</span><span class="text-[#ffa657]"> + ⅓ × ( </span><span class="text-[#79c0ff]">SBP</span><span class="text-[#ffa657]"> − </span><span class="text-[#79c0ff]">DBP</span><span class="text-[#ffa657]"> )</span>
     </p>
     <p class="mt-1 text-[#6e7681]">// Ekuivalen:</p>
     <p>
-      <span class="text-[#79c0ff]">MAP</span>
-      <span class="text-[#ffa657]"> = ( </span>
-      <span class="text-[#79c0ff]">SBP</span>
-      <span class="text-[#ffa657]"> + </span>
-      <span class="text-[#7ee787]">2</span>
-      <span class="text-[#ffa657]"> × </span>
-      <span class="text-[#79c0ff]">DBP</span>
-      <span class="text-[#ffa657]"> ) ÷ </span>
-      <span class="text-[#7ee787]">3</span>
+      <span class="text-[#79c0ff]">MAP</span><span class="text-[#ffa657]"> = ( </span><span class="text-[#79c0ff]">SBP</span><span class="text-[#ffa657]"> + </span><span class="text-[#7ee787]">2</span><span class="text-[#ffa657]"> × </span><span class="text-[#79c0ff]">DBP</span><span class="text-[#ffa657]"> ) ÷ </span><span class="text-[#7ee787]">3</span>
     </p>
   </div>
-
   <div class="mx-4 mt-3 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl p-4 space-y-3 shadow-sm">
-    <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed">
-      <span class="font-medium text-slate-800 dark:text-[#e6edf3]">Mengapa ⅓ sistolik dan ⅔ diastolik?</span>
-      Jantung menghabiskan sekitar sepertiga siklus jantung dalam fase sistol (kontraksi) dan dua pertiga dalam fase diastol (relaksasi).
-    </p>
-    <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed">
-      Rumus ini merupakan <span class="font-medium text-slate-800 dark:text-[#e6edf3]">pendekatan klinis</span> — nilai MAP sesungguhnya bisa diukur secara invasif melalui kateter arteri, namun formula ini terbukti akurat secara klinis.
-    </p>
-    <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed">
-      <span class="font-medium text-slate-800 dark:text-[#e6edf3]">Contoh:</span> SBP 120 mmHg, DBP 80 mmHg → MAP = 80 + ⅓ × 40 = <span class="font-semibold text-slate-800 dark:text-[#e6edf3]">93 mmHg</span>
-    </p>
+    <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed"><span class="font-medium text-slate-800 dark:text-[#e6edf3]">Mengapa ⅓ sistolik dan ⅔ diastolik?</span> Jantung menghabiskan sekitar sepertiga siklus jantung dalam fase sistol (kontraksi) dan dua pertiga dalam fase diastol (relaksasi).</p>
+    <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed">Rumus ini merupakan <span class="font-medium text-slate-800 dark:text-[#e6edf3]">pendekatan klinis</span> — nilai MAP sesungguhnya bisa diukur secara invasif melalui kateter arteri, namun formula ini terbukti akurat secara klinis.</p>
+    <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed"><span class="font-medium text-slate-800 dark:text-[#e6edf3]">Contoh:</span> SBP 120 mmHg, DBP 80 mmHg → MAP = 80 + ⅓ × 40 = <span class="font-semibold text-slate-800 dark:text-[#e6edf3]">93 mmHg</span></p>
   </div>
-
   <div class="mx-4 mt-3 bg-amber-50 dark:bg-[#1c1500] border border-amber-200 dark:border-amber-900 rounded-xl px-4 py-3 flex gap-2.5 items-start">
-    <svg class="w-4 h-4 stroke-amber-500 fill-none shrink-0 mt-0.5" stroke-width="1.8" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
-    </svg>
+    <svg class="w-4 h-4 stroke-amber-500 fill-none shrink-0 mt-0.5" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
     <span class="text-xs text-amber-800 dark:text-amber-400 leading-relaxed">Paling akurat pada detak jantung normal (60–100 bpm). Pada takikardia berat, rasio sistol/diastol berubah dan formula ini mungkin sedikit menyimpang.</span>
   </div>
-
 </div><!-- /tab-formula -->
 
 <!-- ══════════════════════════ TAB: REFERENSI ══════════════════════════ -->
 <div id="tab-referensi" class="tab-content hidden">
-
   <div class="mx-4 mt-3 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl p-4 shadow-sm space-y-3">
     <p class="font-serif text-base text-slate-800 dark:text-[#e6edf3]">Signifikansi Klinis</p>
     <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed">MAP ≥ 65 mmHg umumnya dianggap sebagai target minimum untuk memastikan perfusi organ adekuat pada pasien dewasa, terutama dalam tatalaksana syok sepsis.</p>
     <p class="text-sm text-slate-600 dark:text-[#8b949e] leading-relaxed">Pada cedera otak traumatik, target MAP seringkali ditingkatkan menjadi ≥ 80 mmHg untuk menjaga tekanan perfusi serebral.</p>
   </div>
-
   <div class="mx-4 mt-3 bg-white dark:bg-[#161b22] border border-slate-200 dark:border-[#30363d] rounded-2xl p-4 shadow-sm space-y-3">
     <p class="font-serif text-base text-slate-800 dark:text-[#e6edf3]">Referensi Utama</p>
     <div class="bg-slate-50 dark:bg-[#1c2128] rounded-xl p-3.5 space-y-1">
@@ -318,7 +229,6 @@
       <p class="text-[11px] italic text-slate-400 dark:text-[#484f58]">Pembahasan mendalam tentang interpretasi MAP secara fisiologis.</p>
     </div>
   </div>
-
 </div><!-- /tab-referensi -->
 
 <!-- ══ BOTTOM BAR ══ -->
@@ -408,11 +318,11 @@ function calculate(){
 
   const map=Math.round(dbp+(1/3)*(sbp-dbp));
   let cls,cat,desc;
-  if(map<60){cls='result-danger';cat='Kritis Rendah';desc='Perfusi organ sangat terganggu. Diperlukan intervensi segera — pertimbangkan resusitasi cairan dan vasopressor.';}
-  else if(map<70){cls='result-below';cat='Di Bawah Normal';desc='Pantau tanda hipoperfusi organ (oliguria, perubahan kesadaran). Target MAP ≥ 65 mmHg pada pasien kritis.';}
-  else if(map<=100){cls='result-normal';cat='Normal';desc='Perfusi organ umumnya adekuat. Lanjutkan pemantauan rutin sesuai kondisi klinis pasien.';}
-  else if(map<110){cls='result-above';cat='Di Atas Normal';desc='Pertimbangkan evaluasi hipertensi dan dampaknya terhadap organ target (jantung, ginjal, otak).';}
-  else{cls='result-danger';cat='Hipertensi Berat';desc='Risiko kerusakan organ target meningkat signifikan. Tatalaksana hipertensi segera diperlukan.';}
+  if(map<60){cls='result-danger';}
+  else if(map<70){cls='result-below';}
+  else if(map<=100){cls='result-normal';}
+  else if(map<110){cls='result-above';}
+  else{cls='result-danger';}
 
   ra.className='result-area '+cls+' transition-colors duration-300';
   rb.innerHTML=`
@@ -420,9 +330,7 @@ function calculate(){
       <span style="font-family:'DM Mono',monospace;font-size:52px;font-weight:500;color:#fff;line-height:1">${map}</span>
       <span style="font-size:16px;color:rgba(255,255,255,0.5)">mm Hg</span>
     </div>
-    <span style="display:inline-block;margin-top:10px;background:rgba(255,255,255,0.2);color:#fff;font-size:11px;font-weight:600;padding:4px 14px;border-radius:9999px;letter-spacing:0.04em">${cat}</span>
-    <p style="font-size:13px;color:rgba(255,255,255,0.7);margin-top:10px;line-height:1.55;max-width:360px">${desc}</p>
-  `;
+    `;
   scoreEl.textContent=map; unitEl.textContent=' mmHg'; pillEl.textContent=cat; pdfBtn.disabled=false;
 }
 
@@ -433,17 +341,12 @@ function resetCalc(){
   calculate();
 }
 
-// ── DOWNLOAD PDF ──
+// ── DOWNLOAD PDF — hanya cetak halaman kalkulator ──
 function downloadPDF(){
-  document.querySelectorAll('.tab-content').forEach(el=>{ el.classList.remove('hidden'); el.style.display='block'; });
   const orig=document.title;
   document.title='MAP Calculator — Hasil Pemeriksaan';
   window.print();
   document.title=orig;
-  setTimeout(()=>{
-    document.querySelectorAll('.tab-content').forEach(el=>{ el.style.display=''; el.classList.add('hidden'); });
-    document.getElementById('tab-calc').classList.remove('hidden');
-  },500);
 }
 </script>
 </body>
