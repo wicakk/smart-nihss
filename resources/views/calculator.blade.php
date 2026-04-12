@@ -39,6 +39,28 @@
     .dark .opt-label:hover { border-color: #4a6fa5; background-color: #252d3d; }
     .dark .opt-label.selected { border-color: #3b82f6; background-color: rgba(59,130,246,0.12); color: #93c5fd; }
 
+    /* Opsi "Tidak Dapat Dinilai" */
+    .opt-label-tdn {
+      transition: border-color 0.15s, background-color 0.15s;
+      cursor: pointer;
+      border-style: dashed !important;
+    }
+    .opt-label-tdn:hover { border-color: #3b82f6 !important; background-color: rgba(59,130,246,0.04); }
+    .opt-label-tdn.selected-tdn {
+      border-color: #3b82f6 !important;
+      background-color: rgba(59,130,246,0.07) !important;
+    }
+    .dark .opt-label-tdn { border-color: #1e3a5f !important; background-color: #0f172a !important; color: #93c5fd; }
+    .dark .opt-label-tdn:hover { border-color: #2563eb !important; background-color: rgba(37,99,235,0.1) !important; }
+    .dark .opt-label-tdn.selected-tdn { border-color: #3b82f6 !important; background-color: rgba(59,130,246,0.12) !important; color: #bfdbfe; }
+
+    /* Tooltip keterangan TDN */
+    .tdn-info-box {
+      display: none;
+      animation: fadeUp 0.18s ease both;
+    }
+    .tdn-info-box.visible { display: block; }
+
     .card-error {
       border-color: #ef4444 !important;
       box-shadow: 0 0 0 3px rgba(239,68,68,0.15);
@@ -155,6 +177,8 @@
 
       <div class="p-4 space-y-2">
         <p x-show="section.instruction" class="text-xs font-bold leading-relaxed mb-1" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" x-text="section.instruction"></p>
+
+        <!-- Opsi normal -->
         <template x-for="(opt, oi) in section.options" :key="oi">
           <label class="opt-label flex items-center gap-3 px-3 py-3 rounded-xl border"
             :class="[answers[section.id] === oi ? 'selected' : '', darkMode ? 'border-gray-700' : 'border-gray-200']"
@@ -171,6 +195,102 @@
             </div>
           </label>
         </template>
+
+        <!-- Opsi Tidak Dapat Dinilai -->
+        <div>
+          <label class="opt-label-tdn flex items-center gap-3 px-3 py-2.5 rounded-xl border"
+            :class="[
+              tdnAnswers[section.id] === true ? 'selected-tdn' : '',
+              darkMode ? 'border-blue-900' : 'border-blue-200'
+            ]"
+            @click="setTDN(section.id)">
+            <div class="w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-all"
+              :class="tdnAnswers[section.id] === true
+                ? 'border-blue-500 bg-blue-500'
+                : (darkMode ? 'border-blue-900' : 'border-blue-300')">
+              <!-- Ikon tanda tanya saat dipilih -->
+              <svg x-show="tdnAnswers[section.id] === true" class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+              </svg>
+            </div>
+            <div class="flex-1 flex items-center justify-between gap-2">
+              <div class="flex items-center gap-1.5">
+                <span class="text-sm leading-snug font-semibold"
+                  :class="tdnAnswers[section.id] === true
+                    ? (darkMode ? 'text-blue-300' : 'text-blue-700')
+                    : (darkMode ? 'text-blue-400' : 'text-blue-500')">
+                  Tidak Dapat Dinilai
+                </span>
+                <!-- Badge TDN -->
+                <span class="text-xs font-mono px-1.5 py-0.5 rounded-md font-bold"
+                  :class="darkMode ? 'bg-blue-900/40 text-blue-400' : 'bg-blue-100 text-blue-500'">
+                  TDN
+                </span>
+              </div>
+              <span class="text-xs font-mono font-semibold flex-shrink-0"
+                :class="tdnAnswers[section.id] === true
+                  ? (darkMode ? 'text-blue-400' : 'text-blue-500')
+                  : (darkMode ? 'text-gray-600' : 'text-gray-300')">
+                —
+              </span>
+            </div>
+          </label>
+
+          <!-- Input keterangan TDN — diisi oleh pengguna -->
+          <div x-show="tdnAnswers[section.id] === true"
+            x-transition:enter="transition ease-out duration-200"
+            x-transition:enter-start="opacity-0 -translate-y-1"
+            x-transition:enter-end="opacity-100 translate-y-0"
+            class="mt-2 rounded-xl border overflow-hidden"
+            :class="darkMode ? 'border-blue-900/60' : 'border-blue-200'">
+
+            <!-- Header input -->
+            <div class="flex items-center gap-2 px-3 py-2 border-b"
+              :class="darkMode ? 'bg-blue-950/40 border-blue-900/60' : 'bg-blue-50 border-blue-200'">
+              <svg class="w-3.5 h-3.5 flex-shrink-0" :class="darkMode ? 'text-blue-400' : 'text-blue-500'" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+              </svg>
+              <p class="text-xs font-bold flex-1" :class="darkMode ? 'text-blue-300' : 'text-blue-700'">
+                Alasan tidak dapat dinilai
+              </p>
+              <button @click.stop="setTDN(section.id)"
+                class="text-xs font-bold flex items-center gap-1 px-2 py-0.5 rounded-lg transition-colors"
+                :class="darkMode ? 'text-blue-500 hover:bg-blue-900/40 hover:text-blue-300' : 'text-blue-400 hover:bg-blue-100 hover:text-blue-700'">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                Batalkan
+              </button>
+            </div>
+
+            <!-- Textarea -->
+            <div :class="darkMode ? 'bg-blue-950/20' : 'bg-white'">
+              <textarea
+                :id="'tdn-note-' + section.id"
+                x-model="tdnNotes[section.id]"
+                @click.stop
+                @keydown.stop
+                rows="3"
+                placeholder="Tuliskan alasan di sini, misal: pasien tidak kooperatif, intubasi, trauma, sedasi, dsb..."
+                class="w-full px-3 py-2.5 text-xs leading-relaxed resize-none outline-none bg-transparent placeholder-opacity-50 transition-colors"
+                :class="darkMode
+                  ? 'text-blue-200 placeholder-blue-700 focus:placeholder-blue-600'
+                  : 'text-blue-900 placeholder-blue-300 focus:placeholder-blue-400'"
+              ></textarea>
+              <!-- Karakter counter -->
+              <div class="px-3 pb-2 flex items-center justify-between">
+                <p class="text-xs" :class="darkMode ? 'text-blue-700' : 'text-blue-300'">
+                  Skor tidak dihitung dalam total NIHSS
+                </p>
+                <span class="text-xs font-mono"
+                  :class="(tdnNotes[section.id] || '').length > 200
+                    ? 'text-red-400'
+                    : (darkMode ? 'text-blue-700' : 'text-blue-300')"
+                  x-text="(tdnNotes[section.id] || '').length + '/250'">
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </template>
@@ -226,6 +346,10 @@
         <div class="text-right space-y-1.5">
           <span class="block px-3 py-1.5 rounded-full text-xs font-semibold" :class="categoryBadge" x-text="categoryLabel"></span>
           <p class="text-xs font-mono" :class="darkMode ? 'text-gray-600' : 'text-gray-200'" x-text="answeredCount + '/15 item terjawab'"></p>
+          <!-- Info TDN count -->
+          <p x-show="tdnCount > 0" class="text-xs font-mono"
+            :class="darkMode ? 'text-blue-400' : 'text-blue-200'"
+            x-text="tdnCount + ' item TDN'"></p>
         </div>
       </div>
       <div class="score-bar-track rounded-full h-1.5 mb-3 overflow-hidden">
@@ -266,6 +390,10 @@
           <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
             :class="selectedItem ? getCategoryBadge(selectedItem.category) : ''"
             x-text="selectedItem?.category"></span>
+          <!-- Badge TDN di modal -->
+          <span x-show="selectedItem && selectedItem.tdnCount > 0"
+            class="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
+            x-text="selectedItem?.tdnCount + ' TDN'"></span>
         </div>
       </div>
       <button @click="showModal = false"
@@ -321,9 +449,29 @@
               <div class="flex-1 pr-4">
                 <span class="text-xs font-mono font-bold text-blue-500" x-text="detail.code"></span>
                 <p class="text-sm font-semibold mt-0.5" x-text="detail.label"></p>
-                <p class="text-xs mt-0.5 leading-snug" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" x-text="detail.answer"></p>
+                <!-- Jawaban normal -->
+                <p x-show="!detail.isTDN" class="text-xs mt-0.5 leading-snug"
+                  :class="darkMode ? 'text-gray-500' : 'text-gray-400'"
+                  x-text="detail.answer"></p>
+                <!-- TDN: label + catatan -->
+                <div x-show="detail.isTDN" class="mt-1 space-y-0.5">
+                  <span class="text-xs font-bold"
+                    :class="darkMode ? 'text-blue-400' : 'text-blue-600'">Tidak Dapat Dinilai</span>
+                  <p x-show="detail.tdnNote"
+                    class="text-xs leading-snug italic"
+                    :class="darkMode ? 'text-blue-500' : 'text-blue-500'"
+                    x-text="'&ldquo;' + detail.tdnNote + '&rdquo;'"></p>
+                  <p x-show="!detail.tdnNote"
+                    class="text-xs leading-snug"
+                    :class="darkMode ? 'text-gray-600' : 'text-gray-400'">Tidak ada keterangan</p>
+                </div>
               </div>
-              <span class="text-base font-bold font-mono flex-shrink-0 mt-0.5"
+              <!-- TDN badge atau skor -->
+              <div x-show="detail.isTDN" class="flex-shrink-0 mt-0.5">
+                <span class="text-xs font-bold font-mono px-1.5 py-0.5 rounded-md"
+                  :class="darkMode ? 'bg-blue-900/40 text-blue-400' : 'bg-blue-100 text-blue-600'">TDN</span>
+              </div>
+              <span x-show="!detail.isTDN" class="text-base font-bold font-mono flex-shrink-0 mt-0.5"
                 :class="detail.score === 0 ? 'text-green-500' : (detail.score >= 3 ? 'text-red-500' : 'text-orange-500')"
                 x-text="detail.score"></span>
             </div>
@@ -348,6 +496,8 @@ function nihssApp() {
   return {
     darkMode: false,
     answers: {},
+    tdnAnswers: {},   // { [sectionId]: true } jika TDN dipilih
+    tdnNotes: {},     // { [sectionId]: 'alasan...' } catatan yang diisi pengguna
     history: [],
     showModal: false,
     selectedItem: null,
@@ -414,9 +564,32 @@ function nihssApp() {
       })
     },
 
+    // Pilih jawaban normal → hapus TDN
     setAnswer(id, optIdx) {
       this.answers = { ...this.answers, [id]: optIdx }
+      // Hapus TDN jika sebelumnya dipilih
+      if (this.tdnAnswers[id]) {
+        const tdn = { ...this.tdnAnswers }
+        delete tdn[id]
+        this.tdnAnswers = tdn
+      }
       if (this.showErrors && this.answeredCount === 15) this.showErrors = false
+    },
+
+    // Toggle TDN → hapus jawaban normal jika ada
+    setTDN(id) {
+      if (this.tdnAnswers[id]) {
+        // Batalkan TDN
+        const tdn = { ...this.tdnAnswers }
+        delete tdn[id]
+        this.tdnAnswers = tdn
+      } else {
+        // Pilih TDN, hapus jawaban normal
+        const ans = { ...this.answers }
+        delete ans[id]
+        this.answers = ans
+        this.tdnAnswers = { ...this.tdnAnswers, [id]: true }
+      }
     },
 
     get totalScore() {
@@ -428,7 +601,19 @@ function nihssApp() {
       return total
     },
 
-    get answeredCount() { return Object.keys(this.answers).length },
+    // Jumlah item yang sudah dijawab (normal + TDN keduanya dihitung sebagai "terjawab")
+    get answeredCount() {
+      let count = 0
+      for (const q of this.questions) {
+        if (this.answers[q.id] !== undefined || this.tdnAnswers[q.id] === true) count++
+      }
+      return count
+    },
+
+    // Jumlah item TDN
+    get tdnCount() {
+      return Object.keys(this.tdnAnswers).length
+    },
 
     get categoryLabel() {
       const s = this.totalScore
@@ -478,7 +663,7 @@ function nihssApp() {
       if (this.answeredCount >= 15) { this.saveResult(); return }
       this.showErrors = true
       this.$nextTick(() => {
-        const firstEmpty = this.questions.find(q => this.answers[q.id] === undefined)
+        const firstEmpty = this.questions.find(q => this.answers[q.id] === undefined && !this.tdnAnswers[q.id])
         if (firstEmpty) {
           const el = document.getElementById('section-' + firstEmpty.id)
           if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' })
@@ -492,20 +677,40 @@ function nihssApp() {
         timeZone: 'Asia/Jakarta', day: 'numeric', month: 'long',
         year: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
       }) + ' WIB'
-      const details = this.questions.map(q => ({
-        code: q.code, label: q.label,
-        answer: q.options[this.answers[q.id]].label,
-        score: q.options[this.answers[q.id]].score,
-        maxScore: q.options[q.options.length - 1].score,
-      }))
-      this.history.push({ datetime, total: this.totalScore, category: this.categoryLabel, details })
+      const details = this.questions.map(q => {
+        const isTDN = this.tdnAnswers[q.id] === true
+        if (isTDN) {
+          const note = (this.tdnNotes[q.id] || '').trim()
+          return {
+            code: q.code,
+            label: q.label,
+            answer: note ? 'TDN — ' + note : 'Tidak Dapat Dinilai (TDN)',
+            tdnNote: note,
+            score: null,
+            maxScore: q.options[q.options.length - 1].score,
+            isTDN: true,
+          }
+        }
+        return {
+          code: q.code,
+          label: q.label,
+          answer: q.options[this.answers[q.id]].label,
+          score: q.options[this.answers[q.id]].score,
+          maxScore: q.options[q.options.length - 1].score,
+          isTDN: false,
+        }
+      })
+      const tdnCountSaved = details.filter(d => d.isTDN).length
+      this.history.push({ datetime, total: this.totalScore, category: this.categoryLabel, details, tdnCount: tdnCountSaved })
       this.saveHistory()
       this.answers = {}
+      this.tdnAnswers = {}
+      this.tdnNotes = {}
       this.showErrors = false
       this.$nextTick(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) })
     },
 
-    resetAll() { this.answers = {}; this.showErrors = false },
+    resetAll() { this.answers = {}; this.tdnAnswers = {}; this.tdnNotes = {}; this.showErrors = false },
 
     showDetail(item) {
       this.selectedItem = item
@@ -520,11 +725,13 @@ function nihssApp() {
       const isDk = this.darkMode
       const gc = isDk ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)'
       const lc = isDk ? '#4b5563' : '#9ca3af'
-      const scores = item.details.map(d => d.score)
+      const scores = item.details.map(d => d.isTDN ? 0 : d.score)
       const maxes  = item.details.map(d => d.maxScore || 4)
-      const colors = scores.map((s, i) =>
-        s === 0 ? '#22c55e' : s === maxes[i] ? '#ef4444' : s >= 2 ? '#f97316' : '#3b82f6'
-      )
+      const colors = item.details.map((d, i) => {
+        if (d.isTDN) return '#3b82f6'
+        const s = d.score
+        return s === 0 ? '#22c55e' : s === maxes[i] ? '#ef4444' : s >= 2 ? '#f97316' : '#3b82f6'
+      })
       this.chartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -533,7 +740,17 @@ function nihssApp() {
         },
         options: {
           responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => 'Skor: ' + c.raw + ' / ' + maxes[c.dataIndex] } } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: c => {
+                  const d = item.details[c.dataIndex]
+                  return d.isTDN ? 'Tidak Dapat Dinilai (TDN)' : 'Skor: ' + c.raw + ' / ' + maxes[c.dataIndex]
+                }
+              }
+            }
+          },
           scales: {
             x: { ticks: { color: lc, font: { size: 10, family: 'IBM Plex Mono' } }, grid: { color: gc } },
             y: { min: 0, max: 4, ticks: { color: lc, font: { size: 10 }, stepSize: 1 }, grid: { color: gc } }
@@ -563,7 +780,6 @@ function nihssApp() {
         const contentW = pageW - marginL - marginR
         let y = 0
 
-        // ── Warna berdasarkan kategori ──
         const catColors = {
           'Ringan':      [22, 163, 74],
           'Sedang':      [202, 138, 4],
@@ -571,21 +787,19 @@ function nihssApp() {
           'Sangat Berat':[220, 38, 38],
         }
         const catRgb = catColors[item.category] || [100, 116, 139]
+        const tdnRgb = [59, 130, 246]
 
         // ══ HEADER BIRU ══
         doc.setFillColor(37, 99, 235)
         doc.rect(0, 0, pageW, 38, 'F')
 
-        // Logo kotak putih
         doc.setFillColor(255, 255, 255)
         doc.roundedRect(marginL, 10, 18, 18, 3, 3, 'F')
-        doc.setFillColor(37, 99, 235)
         doc.setFontSize(8)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(37, 99, 235)
         doc.text('NIHSS', marginL + 9, 21, { align: 'center' })
 
-        // Judul
         doc.setTextColor(255, 255, 255)
         doc.setFontSize(15)
         doc.setFont('helvetica', 'bold')
@@ -596,7 +810,6 @@ function nihssApp() {
         doc.text('RSUP Fatmawati', marginL + 22, 25)
         doc.text('Laporan Pemeriksaan Stroke', marginL + 22, 31)
 
-        // Tanggal di kanan atas
         doc.setFontSize(7.5)
         doc.setTextColor(186, 210, 255)
         doc.text(item.datetime, pageW - marginR, 25, { align: 'right' })
@@ -609,7 +822,6 @@ function nihssApp() {
         doc.setLineWidth(0.3)
         doc.roundedRect(marginL, y, contentW, 28, 4, 4, 'FD')
 
-        // Skor besar
         doc.setFontSize(32)
         doc.setFont('helvetica', 'bold')
         doc.setTextColor(...catRgb)
@@ -618,7 +830,6 @@ function nihssApp() {
         doc.setTextColor(148, 163, 184)
         doc.text('/42', marginL + 34, y + 20)
 
-        // Badge kategori
         const badgeX = marginL + 55
         const badgeY = y + 8
         doc.setFillColor(...catRgb.map(c => Math.min(255, c + 200)))
@@ -628,13 +839,22 @@ function nihssApp() {
         doc.setTextColor(...catRgb)
         doc.text(item.category, badgeX + 19, badgeY + 5.5, { align: 'center' })
 
-        // Label skor
+        // Badge TDN jika ada
+        if (item.tdnCount > 0) {
+          const tdnBadgeX = badgeX + 42
+          doc.setFillColor(243, 232, 255)
+          doc.roundedRect(tdnBadgeX, badgeY, 28, 8, 2, 2, 'F')
+          doc.setFontSize(8)
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(...tdnRgb)
+          doc.text(item.tdnCount + ' TDN', tdnBadgeX + 14, badgeY + 5.5, { align: 'center' })
+        }
+
         doc.setFontSize(7)
         doc.setFont('helvetica', 'normal')
         doc.setTextColor(100, 116, 139)
         doc.text('Total Skor NIHSS', marginL + 22, y + 26, { align: 'center' })
 
-        // Progress bar
         const barX = badgeX
         const barY = y + 18
         const barW = contentW - (badgeX - marginL) - 8
@@ -660,7 +880,6 @@ function nihssApp() {
           { label: 'Sangat Berat', range: '25 - 42', prognosis: 'Buruk',       rgb: [220, 38, 38]  },
         ]
 
-        // Header tabel
         doc.setFillColor(241, 245, 249)
         doc.rect(marginL, y, contentW, 6, 'F')
         doc.setFontSize(7)
@@ -709,7 +928,6 @@ function nihssApp() {
         doc.text('RINCIAN 15 ITEM PEMERIKSAAN', marginL, y)
         y += 5
 
-        // Header tabel detail
         doc.setFillColor(241, 245, 249)
         doc.rect(marginL, y, contentW, 6, 'F')
         doc.setFontSize(7)
@@ -722,50 +940,88 @@ function nihssApp() {
         y += 6
 
         item.details.forEach((d, i) => {
-          // Cek halaman baru
-          if (y > pageH - 30) {
+          if (y > pageH - 40) {
             doc.addPage()
             y = 20
           }
 
-          const rowH = 9
-          if (i % 2 === 0) {
+          // Baris TDN bisa lebih tinggi jika ada catatan
+          const hasNote = d.isTDN && d.tdnNote
+          const rowH = hasNote ? 14 : 9
+
+          if (i % 2 === 0 && !d.isTDN) {
             doc.setFillColor(248, 250, 252)
             doc.rect(marginL, y, contentW, rowH, 'F')
           }
+
+          // Highlight baris TDN dengan warna ungu sangat muda
+          if (d.isTDN) {
+            doc.setFillColor(250, 245, 255)
+            doc.rect(marginL, y, contentW, rowH, 'F')
+          }
+
           doc.setDrawColor(226, 232, 240)
           doc.setLineWidth(0.15)
           doc.line(marginL, y + rowH, marginL + contentW, y + rowH)
 
-          // Kode (biru)
           doc.setFontSize(7)
           doc.setFont('helvetica', 'bold')
           doc.setTextColor(37, 99, 235)
           doc.text(d.code, marginL + 3, y + 5.8)
 
-          // Label domain
           doc.setFont('helvetica', 'bold')
           doc.setTextColor(30, 41, 59)
           const labelTxt = doc.splitTextToSize(d.label, 62)
           doc.text(labelTxt[0], marginL + 18, y + 5.8)
 
-          // Jawaban
-          doc.setFont('helvetica', 'normal')
-          doc.setTextColor(71, 85, 105)
-          const ansTxt = doc.splitTextToSize(d.answer, 56)
-          doc.text(ansTxt[0], marginL + 85, y + 5.8)
+          if (d.isTDN) {
+            doc.setFont('helvetica', 'bold')
+            doc.setFontSize(7)
+            doc.setTextColor(...tdnRgb)
+            doc.text('Tidak Dapat Dinilai', marginL + 85, y + 5.8)
 
-          // Skor (warna)
-          const scoreRgb = d.score === 0 ? [22, 163, 74] : d.score >= 3 ? [220, 38, 38] : [234, 88, 12]
-          doc.setFont('helvetica', 'bold')
-          doc.setFontSize(8)
-          doc.setTextColor(...scoreRgb)
-          doc.text(String(d.score), pageW - marginR - 3, y + 5.8, { align: 'right' })
+            // Catatan pengguna di baris kedua (jika ada)
+            if (hasNote) {
+              doc.setFont('helvetica', 'italic')
+              doc.setFontSize(6.5)
+              doc.setTextColor(37, 99, 235)
+              const noteTxt = doc.splitTextToSize('\u201c' + d.tdnNote + '\u201d', 60)
+              doc.text(noteTxt[0], marginL + 85, y + 10.5)
+            }
+
+            // Badge TDN kecil di kolom skor
+            doc.setFillColor(243, 232, 255)
+            doc.roundedRect(pageW - marginR - 12, y + 2, 10, 5, 1, 1, 'F')
+            doc.setFont('helvetica', 'bold')
+            doc.setFontSize(6.5)
+            doc.setTextColor(...tdnRgb)
+            doc.text('TDN', pageW - marginR - 7, y + 5.8, { align: 'center' })
+          }
 
           y += rowH
         })
 
         y += 10
+
+        // Catatan TDN jika ada
+        if (item.tdnCount > 0) {
+          if (y > pageH - 30) { doc.addPage(); y = 20 }
+          doc.setFillColor(250, 245, 255)
+          doc.setDrawColor(216, 180, 254)
+          doc.setLineWidth(0.3)
+          doc.roundedRect(marginL, y, contentW, 14, 3, 3, 'FD')
+          doc.setFontSize(7)
+          doc.setFont('helvetica', 'bold')
+          doc.setTextColor(...tdnRgb)
+          doc.text('Catatan TDN:', marginL + 4, y + 5.5)
+          doc.setFont('helvetica', 'normal')
+          doc.setTextColor(107, 70, 150)
+          doc.text(
+            item.tdnCount + ' item ditandai Tidak Dapat Dinilai (TDN) dan tidak dihitung dalam total skor.',
+            marginL + 4, y + 10.5
+          )
+          y += 20
+        }
 
         // ══ FOOTER ══
         if (y > pageH - 20) { doc.addPage(); y = 20 }
@@ -779,7 +1035,6 @@ function nihssApp() {
         doc.text('Dibuat otomatis oleh SMART NIHSS - RSUP Fatmawati', marginL, y)
         doc.text('Halaman 1', pageW - marginR, y, { align: 'right' })
 
-        // Simpan
         doc.save('NIHSS_Laporan_' + Date.now() + '.pdf')
 
       } catch (err) {

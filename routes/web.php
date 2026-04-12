@@ -14,7 +14,8 @@ use App\Http\Controllers\Admin\FormBuilderController;
 
 // Root → redirect to dashboard (auth middleware will redirect to login if unauthenticated)
 Route::get('/', fn() => redirect()->route('dashboard'));
-Route::get('/nihss', fn() => view('calculator'))->name('calculator');
+Route::get('/nihss', fn() => view('welcome-nihss'))->name('welcome-nihss');
+Route::get('/nihss/calculator', fn() => view('calculator'))->name('nihss.calculator');
 
 // ── Authenticated routes ──────────────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {
