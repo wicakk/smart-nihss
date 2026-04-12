@@ -32,7 +32,7 @@
     <!-- LEFT CONTENT (TEXT) -->
     <div>
       <h1 class="text-4xl md:text-5xl font-bold text-blue-900 leading-tight">
-        RSUP Fatmawati <span class="text-white">NIHSS</span>
+        RSUP Fatmawati <span class="text-blue-600">NIHSS</span>
       </h1>
       <p class="mt-4 text-gray-700 text-lg">
         Platform modern untuk membantu tenaga medis melakukan penilaian stroke secara cepat, akurat, dan efisien.
@@ -77,7 +77,7 @@
           </div>
         </div>
       </a> -->
-      <a href="" class="group">
+      {{-- <a href="" class="group">
         <div class="bg-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-2xl hover:scale-105 hover:-translate-y-2 transition">
           <div class="flex items-center gap-4">
             <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-blue-100">
@@ -91,7 +91,7 @@
             </div>
           </div>
         </div>
-      </a>
+      </a> --}}
 
       
       <a href="{{ route('nihss.calculator') }}" class="group">
