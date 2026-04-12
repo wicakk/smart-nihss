@@ -41,19 +41,19 @@
       <!-- INFO CARDS -->
       <div class="grid grid-cols-2 gap-4 mt-8">
         <div class="bg-white/60 backdrop-blur-xl p-4 rounded-2xl shadow">
-          <h3 class="font-bold text-blue-800">⚡ Cepat</h3>
+          <h3 class="font-bold text-blue-800">Cepat</h3>
           <p class="text-sm text-gray-600">Input & hasil instan</p>
         </div>
         <div class="bg-white/60 backdrop-blur-xl p-4 rounded-2xl shadow">
-          <h3 class="font-bold text-blue-800">⚡ Akurat</h3>
+          <h3 class="font-bold text-blue-800">Akurat</h3>
           <p class="text-sm text-gray-600">Perhitungan otomatis</p>
         </div>
         <div class="bg-white/60 backdrop-blur-xl p-4 rounded-2xl shadow">
-          <h3 class="font-bold text-blue-800">⚡ Aman</h3>
+          <h3 class="font-bold text-blue-800">Aman</h3>
           <p class="text-sm text-gray-600">Data tersimpan rapi</p>
         </div>
         <div class="bg-white/60 backdrop-blur-xl p-4 rounded-2xl shadow">
-          <h3 class="font-bold text-blue-800">⚡ Responsive</h3>
+          <h3 class="font-bold text-blue-800">Responsive</h3>
           <p class="text-sm text-gray-600">Bisa di semua device</p>
         </div>
       </div>
