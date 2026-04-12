@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\FormBuilderController;
 Route::get('/', fn() => redirect()->route('dashboard'));
 Route::get('/nihss', fn() => view('welcome-nihss'))->name('welcome-nihss');
 Route::get('/nihss/calculator', fn() => view('calculator'))->name('nihss.calculator');
+Route::get('/nihss/map-calculator', fn() => view('map-calculator'))->name('nihss.map-calculator');
 
 // ── Authenticated routes ──────────────────────────────────────────────────
 Route::middleware(['auth'])->group(function () {

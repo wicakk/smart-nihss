@@ -77,7 +77,7 @@
           </div>
         </div>
       </a> -->
-      {{-- <a href="" class="group">
+      <a href="{{ route('nihss.map-calculator') }}" class="group">
         <div class="bg-white/60 backdrop-blur-xl rounded-3xl p-6 shadow-2xl hover:scale-105 hover:-translate-y-2 transition">
           <div class="flex items-center gap-4">
             <div class="w-14 h-14 flex items-center justify-center rounded-2xl bg-blue-100">
@@ -86,12 +86,12 @@
               </svg>
             </div>
             <div>
-              <h2 class="font-semibold text-gray-800">Mulai NAP</h2>
+              <h2 class="font-semibold text-gray-800">Mulai MAP</h2>
               <p class="text-sm text-gray-600">Mulai Pemeriksaan</p>
             </div>
           </div>
         </div>
-      </a> --}}
+      </a>
 
       
       <a href="{{ route('nihss.calculator') }}" class="group">
