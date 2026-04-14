@@ -443,7 +443,7 @@
           </div>
         </div>
         <div class="text-right space-y-1.5">
-          <span class="block px-3 py-1.5 rounded-full text-xs font-semibold" :class="categoryBadge" x-text="categoryLabel"></span>
+          {{-- <span class="block px-3 py-1.5 rounded-full text-xs font-semibold" :class="categoryBadge" x-text="categoryLabel"></span> --}}
           <p class="text-xs font-mono" :class="darkMode ? 'text-gray-600' : 'text-gray-200'" x-text="answeredCount + '/15 item terjawab'"></p>
           <p x-show="tdnCount > 0" class="text-xs font-mono" :class="darkMode ? 'text-blue-400' : 'text-blue-200'" x-text="tdnCount + ' item TDN'"></p>
           <!-- VAN live indicator -->
@@ -919,14 +919,14 @@ function nihssApp() {
       })
     },
 
-    get categoryLabel() {
-      const s = this.totalScore
-      if (this.answeredCount === 0) return 'Belum Diisi'
-      if (s < 5)   return 'Ringan'
-      if (s <= 14) return 'Sedang'
-      if (s <= 24) return 'Berat'
-      return 'Sangat Berat'
-    },
+    // get categoryLabel() {
+    //   const s = this.totalScore
+    //   if (this.answeredCount === 0) return 'Belum Diisi'
+    //   if (s < 5)   return 'Ringan'
+    //   if (s <= 14) return 'Sedang'
+    //   if (s <= 24) return 'Berat'
+    //   return 'Sangat Berat'
+    // },
 
     get scoreColor() {
       const s = this.totalScore
@@ -1017,7 +1017,8 @@ function nihssApp() {
         if (d && !d.isTDN && d.score >= 1) vanPositif.push(key)
       }
 
-      this.history.push({ datetime, total: this.totalScore, category: this.categoryLabel, details, tdnCount: tdnCountSaved, vanPositif })
+      // this.history.push({ datetime, total: this.totalScore, category: this.categoryLabel, details, tdnCount: tdnCountSaved, vanPositif })
+      this.history.push({ datetime, total: this.totalScore, details, tdnCount: tdnCountSaved, vanPositif })
       this.saveHistory()
       this.answers = {}; this.tdnAnswers = {}; this.tdnNotes = {}; this.showErrors = false
       this.$nextTick(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) })
