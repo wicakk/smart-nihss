@@ -118,7 +118,6 @@
     .dark body { background-color: #0d1117; color: #e6edf3; }
     body { background-color: #f0f4f8; color: #1a202c; transition: background-color 0.25s, color 0.25s; }
 
-    /* ── VAN Badge styles — semua seragam biru ── */
     .van-badge {
       display: inline-flex;
       align-items: center;
@@ -130,7 +129,6 @@
       padding: 3px 8px;
       margin-right: 4px;
     }
-    /* Semua varian VAN badge → biru seragam */
     .van-badge-V,
     .van-badge-A,
     .van-badge-N  { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
@@ -138,7 +136,6 @@
     .dark .van-badge-A,
     .dark .van-badge-N { background: #1e3a5f; color: #93c5fd; border-color: #1d4ed8; }
 
-    /* ── Kotak indikasi VAN — semua seragam biru ── */
     .van-indikasi-box {
       border-radius: 10px;
       padding: 8px 12px;
@@ -153,7 +150,6 @@
     .dark .van-indikasi-A,
     .dark .van-indikasi-N { background: #1e3a5f; border-color: #1d4ed8; color: #93c5fd; }
 
-    /* ── Kotak info motorik — biru ── */
     .motorik-info-box {
       border-radius: 10px;
       padding: 8px 12px;
@@ -170,7 +166,6 @@
       color: #93c5fd;
     }
 
-    /* ── Motorik label badge di header ── */
     .motorik-badge {
       display: inline-flex;
       align-items: center;
@@ -186,12 +181,40 @@
     }
     .dark .motorik-badge { background: #1e3a5f; color: #93c5fd; border-color: #1d4ed8; }
 
-    /* ── Animasi munculnya kotak info ── */
     @keyframes infoFadeIn {
       from { opacity: 0; transform: translateY(-4px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .info-appear { animation: infoFadeIn 0.2s ease both; }
+
+    /* ── VAN History Box ── */
+    .van-history-box {
+      border-radius: 10px;
+      padding: 8px 12px;
+      font-size: 11px;
+      line-height: 1.6;
+      margin-top: 8px;
+      border: 1px solid;
+    }
+    .van-history-lvo { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+    .van-history-neg { background: #f0fdf4; border-color: #bbf7d0; color: #166534; }
+    .dark .van-history-lvo { background: #450a0a; border-color: #7f1d1d; color: #fca5a5; }
+    .dark .van-history-neg { background: #052e16; border-color: #14532d; color: #86efac; }
+
+    .lvo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      border-radius: 6px;
+      padding: 2px 8px;
+      background: #fee2e2;
+      color: #991b1b;
+      border: 1px solid #fca5a5;
+    }
+    .dark .lvo-badge { background: #7f1d1d; color: #fecaca; border-color: #991b1b; }
   </style>
 </head>
 
@@ -217,11 +240,9 @@
         <svg x-show="!darkMode" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
         <svg x-show="darkMode"  class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
       </button>
-      <a href="{{ route('welcome-nihss') }}">
-        <button class="h-9 w-20 rounded-md border border-slate-200 dark:border-[#30363d] bg-blue-500 dark:bg-[#1c2128] flex items-center justify-center text-white dark:text-slate-400 hover:border-blue-400 transition-colors">
-            Beranda
-        </button>
-      </a>
+      <button class="h-9 w-20 rounded-md border border-slate-200 dark:border-[#30363d] bg-blue-500 dark:bg-[#1c2128] flex items-center justify-center text-white dark:text-slate-400 hover:border-blue-400 transition-colors">
+          Beranda
+      </button>
     </div>
   </div>
 </nav>
@@ -240,17 +261,14 @@
       :class="[showErrors && answers[section.id] === undefined && !tdnAnswers[section.id] ? 'card-error' : '']"
       :id="'section-' + section.id">
 
-      <!-- Card header -->
       <div class="header-bg border-b px-4 py-3 flex items-center gap-2.5">
         <span class="w-6 h-6 rounded-lg bg-blue-600 text-white text-xs font-bold font-mono flex items-center justify-center flex-shrink-0" x-text="section.code"></span>
         <span class="text-sm font-extrabold flex-1" x-text="section.label"></span>
 
-        <!-- VAN badge di header -->
         <template x-if="section.van">
           <span class="van-badge van-badge-V" x-text="section.van === 'V' ? 'V — Visual' : section.van === 'A' ? 'A — Aphasia' : 'N — Neglect'"></span>
         </template>
 
-        <!-- Motorik badge di header -->
         <template x-if="section.motorik">
           <span class="motorik-badge" x-text="'Motorik ' + section.motorikSide"></span>
         </template>
@@ -264,7 +282,6 @@
       <div class="p-4 space-y-2">
         <p x-show="section.instruction" class="text-xs font-bold leading-relaxed mb-1" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" x-text="section.instruction"></p>
 
-        <!-- Opsi normal -->
         <template x-for="(opt, oi) in section.options" :key="oi">
           <label class="opt-label flex items-center gap-3 px-3 py-3 rounded-xl border"
             :class="[answers[section.id] === oi ? 'selected' : '', darkMode ? 'border-gray-700' : 'border-gray-200']"
@@ -282,7 +299,6 @@
           </label>
         </template>
 
-        <!-- Opsi Tidak Dapat Dinilai -->
         <div>
           <label class="opt-label-tdn flex items-center gap-3 px-3 py-2.5 rounded-xl border"
             :class="[
@@ -320,7 +336,6 @@
             </div>
           </label>
 
-          <!-- Input keterangan TDN -->
           <div x-show="tdnAnswers[section.id] === true"
             x-transition:enter="transition ease-out duration-200"
             x-transition:enter-start="opacity-0 -translate-y-1"
@@ -360,7 +375,6 @@
           </div>
         </div>
 
-        <!-- ── Kotak Indikasi VAN — HANYA muncul jika skor yang dipilih ≥ 1 ── -->
         <template x-if="section.van && answers[section.id] !== undefined && section.options[answers[section.id]].score >= 1">
           <div class="van-indikasi-box info-appear" :class="'van-indikasi-' + section.van">
             <div class="flex items-start gap-2">
@@ -375,7 +389,6 @@
           </div>
         </template>
 
-        <!-- ── Kotak Indikasi Motorik — HANYA muncul jika skor yang dipilih ≥ 1 ── -->
         <template x-if="section.motorik && answers[section.id] !== undefined && section.options[answers[section.id]].score >= 1">
           <div class="motorik-info-box info-appear">
             <div class="flex items-start gap-2">
@@ -404,18 +417,25 @@
       <div class="h-px flex-1" :class="darkMode ? 'bg-gray-800' : 'bg-gray-200'"></div>
     </div>
     <template x-for="(item, idx) in history.slice().reverse()" :key="idx">
-      <div class="card-bg border rounded-2xl px-4 py-4 flex items-center justify-between gap-3 transition-colors duration-300 fade-up">
-        <div>
-          <div class="flex items-baseline gap-1.5">
-            <span class="text-3xl font-bold font-mono leading-none" :style="`color: ${getCategoryColor(item.category)}`" x-text="item.total"></span>
-            <span class="text-sm" :class="darkMode ? 'text-gray-600' : 'text-gray-400'">/42</span>
+      <div class="card-bg border rounded-2xl px-4 py-4 transition-colors duration-300 fade-up">
+
+        <!-- ══ ROW ATAS: skor + datetime kiri | tombol Lihat Detail kanan ══ -->
+        <!-- PERBAIKAN: hapus badge kategori, skor pakai String() agar angka 0 tetap muncul -->
+        <div class="flex items-center justify-between gap-3">
+          <div>
+            <div class="flex items-baseline gap-1.5">
+              <!-- FIX: gunakan String(item.total) agar nilai 0 tetap tampil -->
+              <span class="text-3xl font-bold font-mono leading-none"
+                :style="`color: ${getCategoryColor(item.category)}`"
+                x-text="String(item.total)"></span>
+              <span class="text-sm" :class="darkMode ? 'text-gray-600' : 'text-gray-400'">/42</span>
+            </div>
+            <p class="text-xs mt-1" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" x-text="item.datetime"></p>
           </div>
-          <p class="text-xs mt-1.5" :class="darkMode ? 'text-gray-500' : 'text-gray-400'" x-text="item.datetime"></p>
-        </div>
-        <div class="flex flex-col items-end gap-2">
-          <span class="px-2.5 py-1 rounded-full text-xs font-semibold" :class="getCategoryBadge(item.category)" x-text="item.category"></span>
+
+          <!-- Tombol Lihat Detail saja, tanpa badge kategori -->
           <button @click="showDetail(item)"
-            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold border transition-all flex-shrink-0"
             :class="darkMode ? 'border-gray-700 text-gray-400 hover:border-blue-500 hover:text-blue-400' : 'border-gray-200 text-gray-500 hover:border-blue-400 hover:text-blue-600'">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
@@ -423,6 +443,44 @@
             Lihat Detail
           </button>
         </div>
+
+        <!-- ── VAN + LVO Info Box di History ── -->
+        <template x-if="item.vanPositif && item.vanPositif.length > 0">
+          <div class="van-history-box van-history-lvo mt-3 info-appear">
+            <div class="flex items-start gap-2">
+              <svg class="w-3.5 h-3.5 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+              </svg>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <span class="font-bold text-xs">VAN Score Positif</span>
+                  <span class="lvo-badge">⚠ Curiga LVO</span>
+                  <template x-for="v in item.vanPositif" :key="v">
+                    <span class="text-xs font-bold font-mono px-1.5 py-0.5 rounded-md"
+                      :class="darkMode ? 'bg-red-900/40 text-red-300' : 'bg-red-100 text-red-700'"
+                      x-text="v === 'V' ? 'V-Visual' : v === 'A' ? 'A-Aphasia' : 'N-Neglect'"></span>
+                  </template>
+                </div>
+                <p class="text-xs leading-relaxed">
+                  Komponen VAN positif pada pemeriksaan ini mengindikasikan kemungkinan <strong>Large Vessel Occlusion (LVO)</strong>. Pertimbangkan evaluasi lanjutan dan tindakan segera.
+                </p>
+              </div>
+            </div>
+          </div>
+        </template>
+
+        <!-- Jika semua VAN negatif -->
+        <template x-if="item.vanPositif && item.vanPositif.length === 0">
+          <div class="van-history-box van-history-neg mt-3">
+            <div class="flex items-center gap-2">
+              <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+              </svg>
+              <p class="text-xs font-semibold">VAN Score Negatif — Tidak ada indikasi LVO pada pemeriksaan ini</p>
+            </div>
+          </div>
+        </template>
+
       </div>
     </template>
   </div>
@@ -443,7 +501,6 @@
           </div>
         </div>
         <div class="text-right space-y-1.5">
-          {{-- <span class="block px-3 py-1.5 rounded-full text-xs font-semibold" :class="categoryBadge" x-text="categoryLabel"></span> --}}
           <p class="text-xs font-mono" :class="darkMode ? 'text-gray-600' : 'text-gray-200'" x-text="answeredCount + '/15 item terjawab'"></p>
           <p x-show="tdnCount > 0" class="text-xs font-mono" :class="darkMode ? 'text-blue-400' : 'text-blue-200'" x-text="tdnCount + ' item TDN'"></p>
           <!-- VAN live indicator -->
@@ -490,15 +547,20 @@
       :class="darkMode ? 'bg-gray-900 border-gray-800' : 'bg-white border-gray-100'">
       <div>
         <p class="font-bold text-sm" x-text="selectedItem?.datetime"></p>
-        <div class="flex items-center gap-2 mt-1">
+        <div class="flex items-center gap-2 mt-1 flex-wrap">
           <span class="font-mono font-bold text-blue-500 text-sm" x-text="'Skor ' + selectedItem?.total"></span>
+          <!-- Badge kategori tetap ada di modal detail untuk referensi klinis -->
           <span class="px-2 py-0.5 rounded-full text-xs font-semibold"
             :class="selectedItem ? getCategoryBadge(selectedItem.category) : ''"
             x-text="selectedItem?.category"></span>
           <span x-show="selectedItem && selectedItem.tdnCount > 0"
             class="px-2 py-0.5 rounded-full text-xs font-semibold bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
             x-text="selectedItem?.tdnCount + ' TDN'"></span>
-          <!-- VAN summary di modal header -->
+          <template x-if="selectedItem && selectedItem.vanPositif && selectedItem.vanPositif.length > 0">
+            <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400">
+              ⚠ Curiga LVO
+            </span>
+          </template>
           <template x-if="selectedItem && selectedItem.vanPositif && selectedItem.vanPositif.length > 0">
             <span class="px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400"
               x-text="'VAN: ' + selectedItem.vanPositif.join(', ')"></span>
@@ -513,6 +575,24 @@
     </div>
 
     <div class="px-5 py-4 space-y-4">
+
+      <!-- VAN LVO alert di modal -->
+      <template x-if="selectedItem && selectedItem.vanPositif && selectedItem.vanPositif.length > 0">
+        <div class="rounded-2xl p-4 border flex items-start gap-3"
+          :class="darkMode ? 'bg-red-950/30 border-red-900/50' : 'bg-red-50 border-red-200'">
+          <svg class="w-5 h-5 flex-shrink-0 mt-0.5" :class="darkMode ? 'text-red-400' : 'text-red-600'" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+          </svg>
+          <div>
+            <p class="font-bold text-sm mb-1" :class="darkMode ? 'text-red-300' : 'text-red-800'">⚠ Curiga Large Vessel Occlusion (LVO)</p>
+            <p class="text-xs leading-relaxed" :class="darkMode ? 'text-red-400' : 'text-red-700'">
+              Komponen VAN positif: <span class="font-bold" x-text="selectedItem.vanPositif.map(v => v === 'V' ? 'Visual' : v === 'A' ? 'Aphasia' : 'Neglect').join(', ')"></span>.
+              VAN Score positif pada pemeriksaan ini mengindikasikan kemungkinan oklusi pembuluh darah besar. Evaluasi lanjutan dan tindakan segera direkomendasikan.
+            </p>
+          </div>
+        </div>
+      </template>
+
       <div class="rounded-2xl p-4 transition-colors" :class="darkMode ? 'bg-gray-800/50' : 'bg-gray-50'">
         <p class="text-xs font-semibold font-mono uppercase tracking-widest mb-3" :class="darkMode ? 'text-gray-500' : 'text-gray-400'">Profil Skor per Domain</p>
         <div style="position:relative;height:200px">
@@ -559,13 +639,11 @@
                 <div class="flex-1 pr-4">
                   <div class="flex items-center gap-1.5 mb-0.5">
                     <span class="text-xs font-mono font-bold text-blue-500" x-text="detail.code"></span>
-                    <!-- VAN badge di rincian modal -->
                     <template x-if="detail.van">
                       <span class="van-badge van-badge-V text-xs" x-text="detail.van"></span>
                     </template>
-                    <!-- Motorik badge di rincian modal -->
                     <template x-if="detail.motorik">
-                      <span class="motorik-badge" x-text="'Motorik'"></span>
+                      <span class="motorik-badge">Motorik</span>
                     </template>
                   </div>
                   <p class="text-sm font-semibold" x-text="detail.label"></p>
@@ -589,7 +667,6 @@
                   x-text="detail.score"></span>
               </div>
 
-              <!-- ── Kotak info VAN di modal — muncul jika skor ≥ 1 ── -->
               <template x-if="detail.van && !detail.isTDN && detail.score >= 1">
                 <div class="mt-2 rounded-lg px-3 py-2 text-xs leading-relaxed"
                   :class="darkMode ? 'bg-blue-950/40 border border-blue-900/50 text-blue-300' : 'bg-blue-50 border border-blue-200 text-blue-700'">
@@ -605,7 +682,6 @@
                 </div>
               </template>
 
-              <!-- ── Kotak info Motorik di modal — muncul jika skor ≥ 1 ── -->
               <template x-if="detail.motorik && !detail.isTDN && detail.score >= 1">
                 <div class="mt-2 rounded-lg px-3 py-2 text-xs leading-relaxed"
                   :class="darkMode ? 'bg-blue-950/40 border border-blue-900/50 text-blue-300' : 'bg-blue-50 border border-blue-200 text-blue-700'">
@@ -721,10 +797,9 @@ function nihssApp() {
       },
       {
         id:'5a', code:'5a', label:'Motorik Lengan Kiri',
-        instruction:'Posisi berbaring: angkat 45°. Posisi duduk: angkat 90°. Hitung 10 detik. Catat apakah amputasi atau fusi sendi.',
-        motorik: true,
-        motorikSide: 'Lengan Kiri',
-        motorikNote: 'Terdapat drift atau kelemahan lengan kiri. Dokumentasikan derajat kelemahan ini dalam rekam medis dan pertimbangkan evaluasi lanjutan terhadap jalur kortikospinal.',
+        instruction:'Posisi berbaring: angkat 45°. Posisi duduk: angkat 90°. Hitung 10 detik.',
+        motorik: true, motorikSide: 'Lengan Kiri',
+        motorikNote: 'Terdapat drift atau kelemahan lengan kiri. Dokumentasikan dan pertimbangkan evaluasi lanjutan.',
         options:[
           {score:0,label:'Mampu menahan posisi penuh selama 10 detik — tidak ada drift'},
           {score:1,label:'Drift — lengan bertahan, namun jatuh sebelum 10 detik; tidak menyentuh tempat tidur'},
@@ -735,10 +810,9 @@ function nihssApp() {
       },
       {
         id:'5b', code:'5b', label:'Motorik Lengan Kanan',
-        instruction:'Posisi berbaring: angkat 45°. Posisi duduk: angkat 90°. Hitung 10 detik. Catat apakah amputasi atau fusi sendi.',
-        motorik: true,
-        motorikSide: 'Lengan Kanan',
-        motorikNote: 'Terdapat drift atau kelemahan lengan kanan. Dokumentasikan derajat kelemahan ini dalam rekam medis dan pertimbangkan evaluasi lanjutan terhadap jalur kortikospinal.',
+        instruction:'Posisi berbaring: angkat 45°. Posisi duduk: angkat 90°. Hitung 10 detik.',
+        motorik: true, motorikSide: 'Lengan Kanan',
+        motorikNote: 'Terdapat drift atau kelemahan lengan kanan. Dokumentasikan dan pertimbangkan evaluasi lanjutan.',
         options:[
           {score:0,label:'Mampu menahan posisi penuh selama 10 detik — tidak ada drift'},
           {score:1,label:'Drift — lengan bertahan, namun jatuh sebelum 10 detik; tidak menyentuh tempat tidur'},
@@ -749,10 +823,9 @@ function nihssApp() {
       },
       {
         id:'6a', code:'6a', label:'Motorik Tungkai Kiri',
-        instruction:'Pasien terlentang, angkat tungkai 30°. Hitung 5 detik. Catat apakah amputasi atau fusi sendi.',
-        motorik: true,
-        motorikSide: 'Tungkai Kiri',
-        motorikNote: 'Terdapat drift atau kelemahan tungkai kiri. Dokumentasikan derajat kelemahan ini dalam rekam medis dan pertimbangkan evaluasi lanjutan terhadap jalur kortikospinal.',
+        instruction:'Pasien terlentang, angkat tungkai 30°. Hitung 5 detik.',
+        motorik: true, motorikSide: 'Tungkai Kiri',
+        motorikNote: 'Terdapat drift atau kelemahan tungkai kiri. Dokumentasikan dan pertimbangkan evaluasi lanjutan.',
         options:[
           {score:0,label:'Mampu menahan 30° selama minimal 5 detik — tidak ada drift'},
           {score:1,label:'Tungkai jatuh perlahan sebelum akhir 5 detik; tidak menyentuh tempat tidur'},
@@ -763,10 +836,9 @@ function nihssApp() {
       },
       {
         id:'6b', code:'6b', label:'Motorik Tungkai Kanan',
-        instruction:'Pasien terlentang, angkat tungkai 30°. Hitung 5 detik. Catat apakah amputasi atau fusi sendi.',
-        motorik: true,
-        motorikSide: 'Tungkai Kanan',
-        motorikNote: 'Terdapat drift atau kelemahan tungkai kanan. Dokumentasikan derajat kelemahan ini dalam rekam medis dan pertimbangkan evaluasi lanjutan terhadap jalur kortikospinal.',
+        instruction:'Pasien terlentang, angkat tungkai 30°. Hitung 5 detik.',
+        motorik: true, motorikSide: 'Tungkai Kanan',
+        motorikNote: 'Terdapat drift atau kelemahan tungkai kanan. Dokumentasikan dan pertimbangkan evaluasi lanjutan.',
         options:[
           {score:0,label:'Mampu menahan 30° selama minimal 5 detik — tidak ada drift'},
           {score:1,label:'Tungkai jatuh perlahan sebelum akhir 5 detik; tidak menyentuh tempat tidur'},
@@ -777,7 +849,7 @@ function nihssApp() {
       },
       {
         id:'7', code:'7', label:'Ataksia Anggota Badan',
-        instruction:'Lakukan tes jari-hidung-jari dan tumit-lutut. Nilai hanya jika ada ataksia yang tidak sebanding dengan kelemahan.',
+        instruction:'Lakukan tes jari-hidung-jari dan tumit-lutut.',
         options:[
           {score:0,label:'Tidak ada ataksia'},
           {score:1,label:'Ataksia pada satu ekstremitas'},
@@ -786,7 +858,7 @@ function nihssApp() {
       },
       {
         id:'8', code:'8', label:'Sensorik',
-        instruction:'Uji dengan jarum pada tungkai, lengan, badan, dan wajah. Pasien afasia diberi skor 1. Pasien stupor/koma diberi skor 2.',
+        instruction:'Uji dengan jarum pada tungkai, lengan, badan, dan wajah.',
         options:[
           {score:0,label:'Normal — tidak ada gangguan sensorik'},
           {score:1,label:'Gangguan sensorik ringan-sedang — kurang peka terhadap nyeri tapi sadar bahwa disentuh'},
@@ -795,9 +867,9 @@ function nihssApp() {
       },
       {
         id:'9', code:'9', label:'Kemampuan Berbahasa (Afasia)',
-        instruction:'Minta pasien mendeskripsikan gambar, membaca kalimat, dan menyebutkan benda. Jika buta, letakkan benda di tangan pasien.',
+        instruction:'Minta pasien mendeskripsikan gambar, membaca kalimat, dan menyebutkan benda.',
         van: 'A',
-        vanIndikasi: 'Skor ≥ 1 pada item ini merupakan komponen A (Aphasia) dalam VAN Score. Afasia — terutama afasia berat atau global — merupakan tanda kuat keterlibatan arteri serebri media (MCA) dan mendukung kecurigaan LVO.',
+        vanIndikasi: 'Skor ≥ 1 pada item ini merupakan komponen A (Aphasia) dalam VAN Score. Afasia berat menunjukkan kemungkinan keterlibatan MCA dan LVO.',
         options:[
           {score:0,label:'Normal — tidak ada afasia, komunikasi normal'},
           {score:1,label:'Afasia ringan–sedang — kesulitan menemukan kata, ada parafasia; dapat berkomunikasi'},
@@ -807,7 +879,7 @@ function nihssApp() {
       },
       {
         id:'10', code:'10', label:'Disartria',
-        instruction:'Minta pasien membaca atau mengulang kata-kata yang tertera. Jika afasia, nilai kejelasan bicara spontan.',
+        instruction:'Minta pasien membaca atau mengulang kata-kata.',
         options:[
           {score:0,label:'Artikulasi normal'},
           {score:1,label:'Disartria ringan–sedang — pelo, namun masih dapat dipahami'},
@@ -816,9 +888,9 @@ function nihssApp() {
       },
       {
         id:'11', code:'11', label:'Neglect / Inatensi',
-        instruction:'Nilai menggunakan stimulasi ganda simultan (visual dan taktil). Jika gangguan visual mencegah penilaian visual, nilai dengan stimulasi kulit.',
+        instruction:'Nilai menggunakan stimulasi ganda simultan (visual dan taktil).',
         van: 'N',
-        vanIndikasi: 'Skor ≥ 1 pada item ini merupakan komponen N (Neglect) dalam VAN Score. Neglect — ketidakmampuan memperhatikan satu sisi tubuh atau ruang — menunjukkan keterlibatan hemisfer (biasanya kanan) dan memperkuat kecurigaan LVO pada VAN Score.',
+        vanIndikasi: 'Skor ≥ 1 pada item ini merupakan komponen N (Neglect) dalam VAN Score. Neglect menunjukkan keterlibatan hemisfer dan memperkuat kecurigaan LVO.',
         options:[
           {score:0,label:'Tidak ada neglect — atensi normal ke semua sisi'},
           {score:1,label:'Inatensi atau ekstinksi pada salah satu modalitas (visual, taktil, auditori, atau spasial)'},
@@ -868,7 +940,6 @@ function nihssApp() {
       }
     },
 
-    // Keterangan VAN untuk modal detail
     getVanKeterangan(van) {
       if (van === 'V') return 'Gangguan lapang pandang terdeteksi. Komponen Visual VAN Score positif — menunjukkan kemungkinan LVO.'
       if (van === 'A') return 'Gangguan bahasa terdeteksi. Komponen Aphasia VAN Score positif — menunjukkan keterlibatan MCA dan kemungkinan LVO.'
@@ -876,7 +947,6 @@ function nihssApp() {
       return ''
     },
 
-    // Keterangan motorik untuk modal detail
     getMotorKeterangan(score) {
       if (score === 1) return 'Drift ringan — ada kelemahan, namun masih ada kontrol parsial.'
       if (score === 2) return 'Kelemahan sedang — dapat melawan gravitasi namun tidak penuh.'
@@ -906,7 +976,6 @@ function nihssApp() {
       return Object.keys(this.tdnAnswers).length
     },
 
-    // Live VAN Score summary untuk bottom bar
     get vanSummary() {
       const vanItems = { V: '3', A: '9', N: '11' }
       return ['V','A','N'].map(key => {
@@ -918,15 +987,6 @@ function nihssApp() {
         return { key, positive: score >= 1 }
       })
     },
-
-    // get categoryLabel() {
-    //   const s = this.totalScore
-    //   if (this.answeredCount === 0) return 'Belum Diisi'
-    //   if (s < 5)   return 'Ringan'
-    //   if (s <= 14) return 'Sedang'
-    //   if (s <= 24) return 'Berat'
-    //   return 'Sangat Berat'
-    // },
 
     get scoreColor() {
       const s = this.totalScore
@@ -961,6 +1021,13 @@ function nihssApp() {
       if (cat === 'Berat')        return '#ea580c'
       if (cat === 'Sangat Berat') return '#dc2626'
       return '#94a3b8'
+    },
+
+    getCategoryFromScore(score) {
+      if (score < 5)   return 'Ringan'
+      if (score <= 14) return 'Sedang'
+      if (score <= 24) return 'Berat'
+      return 'Sangat Berat'
     },
 
     trySave() {
@@ -1008,8 +1075,9 @@ function nihssApp() {
       })
 
       const tdnCountSaved = details.filter(d => d.isTDN).length
+      const total = this.totalScore
+      const category = this.getCategoryFromScore(total)
 
-      // Hitung VAN positif
       const vanMap = { V: '3', A: '9', N: '11' }
       const vanPositif = []
       for (const [key, qid] of Object.entries(vanMap)) {
@@ -1017,8 +1085,7 @@ function nihssApp() {
         if (d && !d.isTDN && d.score >= 1) vanPositif.push(key)
       }
 
-      // this.history.push({ datetime, total: this.totalScore, category: this.categoryLabel, details, tdnCount: tdnCountSaved, vanPositif })
-      this.history.push({ datetime, total: this.totalScore, details, tdnCount: tdnCountSaved, vanPositif })
+      this.history.push({ datetime, total, category, details, tdnCount: tdnCountSaved, vanPositif })
       this.saveHistory()
       this.answers = {}; this.tdnAnswers = {}; this.tdnNotes = {}; this.showErrors = false
       this.$nextTick(() => { window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' }) })
@@ -1042,8 +1109,8 @@ function nihssApp() {
       const scores = item.details.map(d => d.isTDN ? 0 : d.score)
       const maxes  = item.details.map(d => d.maxScore || 4)
       const colors = item.details.map((d, i) => {
-        if (d.isTDN)  return '#3b82f6'
-        if (d.van)    return '#3b82f6'
+        if (d.isTDN)   return '#3b82f6'
+        if (d.van)     return '#3b82f6'
         if (d.motorik) return '#3b82f6'
         const s = d.score
         return s === 0 ? '#22c55e' : s === maxes[i] ? '#ef4444' : s >= 2 ? '#f97316' : '#3b82f6'
@@ -1083,168 +1150,282 @@ function nihssApp() {
       const item = this.selectedItem
       if (!item) return
       this.pdfLoading = true
-      await this.$nextTick()
+      await new Promise(r => setTimeout(r, 50))
+
       try {
+        if (!window.jspdf) throw new Error('jsPDF belum dimuat')
         const { jsPDF } = window.jspdf
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' })
-        const pageW = 210, pageH = 297, marginL = 18, marginR = 18
-        const contentW = pageW - marginL - marginR
-        let y = 0
-        const catColors = { 'Ringan':[22,163,74],'Sedang':[202,138,4],'Berat':[234,88,12],'Sangat Berat':[220,38,38] }
-        const catRgb = catColors[item.category] || [100,116,139]
-        const tdnRgb = [59,130,246]
-        const blueRgb = [37,99,235]
 
-        doc.setFillColor(37,99,235); doc.rect(0,0,pageW,38,'F')
-        doc.setFillColor(255,255,255); doc.roundedRect(marginL,10,18,18,3,3,'F')
-        doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(37,99,235)
-        doc.text('NIHSS',marginL+9,21,{align:'center'})
-        doc.setTextColor(255,255,255); doc.setFontSize(15); doc.setFont('helvetica','bold')
-        doc.text('SMART NIHSS',marginL+22,18)
+        const pageW = 210, pageH = 297
+        const mL = 15, mR = 15
+        const cW = pageW - mL - mR
+        let y = 0
+
+        const blue   = [37, 99, 235]
+        const lightB = [219, 234, 254]
+        const gray   = [100, 116, 139]
+        const dark   = [30, 41, 59]
+        const red    = [220, 38, 38]
+        const lightR = [254, 226, 226]
+        const green  = [22, 163, 74]
+        const orange = [234, 88, 12]
+
+        const catColors = {
+          'Ringan':       [22,163,74],
+          'Sedang':       [202,138,4],
+          'Berat':        [234,88,12],
+          'Sangat Berat': [220,38,38]
+        }
+        const catRgb = catColors[item.category] || gray
+
+        const checkNewPage = (need) => {
+          if (y + need > pageH - 15) { doc.addPage(); y = 15 }
+        }
+        const fillRect = (x, fy, w, h, r, g, b) => {
+          doc.setFillColor(r, g, b); doc.rect(x, fy, w, h, 'F')
+        }
+        const drawLine = (x1, fy, x2) => {
+          doc.setDrawColor(226, 232, 240); doc.setLineWidth(0.2); doc.line(x1, fy, x2, fy)
+        }
+
+        fillRect(0, 0, pageW, 40, 37, 99, 235)
+        doc.setFillColor(255,255,255)
+        doc.roundedRect(mL, 11, 18, 18, 2, 2, 'F')
+        doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(37,99,235)
+        doc.text('NIHSS', mL+9, 22, { align:'center' })
+
+        doc.setTextColor(255,255,255)
+        doc.setFontSize(15); doc.setFont('helvetica','bold')
+        doc.text('SMART NIHSS', mL+22, 19)
         doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(186,210,255)
-        doc.text('RSUP Fatmawati',marginL+22,25)
-        doc.text('Laporan Pemeriksaan Stroke',marginL+22,31)
+        doc.text('RSUP Fatmawati', mL+22, 25)
+        doc.text('Laporan Pemeriksaan Stroke', mL+22, 31)
         doc.setFontSize(7.5); doc.setTextColor(186,210,255)
-        doc.text(item.datetime,pageW-marginR,25,{align:'right'})
-        y = 50
+        doc.text(item.datetime, pageW-mR, 25, { align:'right' })
+        y = 48
 
         doc.setFillColor(248,250,252); doc.setDrawColor(226,232,240); doc.setLineWidth(0.3)
-        doc.roundedRect(marginL,y,contentW,28,4,4,'FD')
-        doc.setFontSize(32); doc.setFont('helvetica','bold'); doc.setTextColor(...catRgb)
-        doc.text(String(item.total),marginL+22,y+20,{align:'center'})
-        doc.setFontSize(10); doc.setTextColor(148,163,184); doc.text('/42',marginL+34,y+20)
-        const badgeX = marginL+55, badgeY = y+8
-        doc.setFillColor(...catRgb.map(c=>Math.min(255,c+200))); doc.roundedRect(badgeX,badgeY,38,8,2,2,'F')
+        doc.roundedRect(mL, y, cW, 30, 4, 4, 'FD')
+
+        doc.setFontSize(30); doc.setFont('helvetica','bold'); doc.setTextColor(...catRgb)
+        doc.text(String(item.total), mL+20, y+20, { align:'center' })
+        doc.setFontSize(10); doc.setFont('helvetica','normal'); doc.setTextColor(...gray)
+        doc.text('/42', mL+32, y+20)
+        doc.setFontSize(7); doc.setTextColor(...gray)
+        doc.text('Total Skor NIHSS', mL+20, y+27, { align:'center' })
+
+        let bx = mL+50, by = y+7
+        const catLight = catRgb.map(c => Math.min(255, c+200))
+        doc.setFillColor(...catLight); doc.roundedRect(bx, by, 38, 7, 2, 2, 'F')
         doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(...catRgb)
-        doc.text(item.category,badgeX+19,badgeY+5.5,{align:'center'})
+        doc.text(item.category, bx+19, by+5, { align:'center' })
+        bx += 42
+
         if (item.tdnCount > 0) {
-          doc.setFillColor(219,234,254); doc.roundedRect(badgeX+42,badgeY,28,8,2,2,'F')
-          doc.setTextColor(...blueRgb); doc.text(item.tdnCount+' TDN',badgeX+56,badgeY+5.5,{align:'center'})
+          doc.setFillColor(...lightB); doc.roundedRect(bx, by, 26, 7, 2, 2, 'F')
+          doc.setTextColor(...blue); doc.text(item.tdnCount+' TDN', bx+13, by+5, { align:'center' })
+          bx += 30
         }
-        // VAN badge di PDF — biru
+
         if (item.vanPositif && item.vanPositif.length > 0) {
-          doc.setFillColor(219,234,254); doc.roundedRect(badgeX+74,badgeY,36,8,2,2,'F')
-          doc.setTextColor(...blueRgb)
-          doc.text('VAN: '+item.vanPositif.join('+'),badgeX+92,badgeY+5.5,{align:'center'})
+          doc.setFillColor(...lightR); doc.roundedRect(bx, by, 40, 7, 2, 2, 'F')
+          doc.setTextColor(...red); doc.setFontSize(7.5)
+          doc.text('⚠ Curiga LVO', bx+20, by+5, { align:'center' })
+          by += 10; bx = mL+50
+          doc.setFillColor(...lightR); doc.roundedRect(bx, by, 60, 7, 2, 2, 'F')
+          doc.setTextColor(...red); doc.setFontSize(7)
+          const vanLabels = item.vanPositif.map(v => v === 'V' ? 'Visual' : v === 'A' ? 'Aphasia' : 'Neglect').join(', ')
+          doc.text('VAN+: ' + vanLabels, bx+30, by+5, { align:'center' })
         }
-        doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(100,116,139)
-        doc.text('Total Skor NIHSS',marginL+22,y+26,{align:'center'})
-        const barX=badgeX, barY=y+18, barW=contentW-(badgeX-marginL)-8
-        doc.setFillColor(226,232,240); doc.roundedRect(barX,barY,barW,3,1.5,1.5,'F')
-        doc.setFillColor(...catRgb); doc.roundedRect(barX,barY,Math.min((item.total/42)*barW,barW),3,1.5,1.5,'F')
-        y += 36
 
-        // Severity table
-        doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(100,116,139)
-        doc.text('KLASIFIKASI KEPARAHAN',marginL,y); y+=5
-        const sevData=[{label:'Ringan',range:'0 - 4',prognosis:'Baik',rgb:[22,163,74]},{label:'Sedang',range:'5 - 14',prognosis:'Sedang',rgb:[202,138,4]},{label:'Berat',range:'15 - 24',prognosis:'Kurang baik',rgb:[234,88,12]},{label:'Sangat Berat',range:'25 - 42',prognosis:'Buruk',rgb:[220,38,38]}]
-        doc.setFillColor(241,245,249); doc.rect(marginL,y,contentW,6,'F')
-        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(100,116,139)
-        doc.text('Kategori',marginL+3,y+4.2); doc.text('Rentang',marginL+48,y+4.2); doc.text('Prognosis',marginL+80,y+4.2); doc.text('Status',pageW-marginR-3,y+4.2,{align:'right'}); y+=6
-        sevData.forEach(row=>{
-          const isA=item.category===row.label
-          if(isA){doc.setFillColor(...row.rgb.map(c=>Math.min(255,c+215)));doc.rect(marginL,y,contentW,7,'F')}
-          doc.setDrawColor(226,232,240);doc.setLineWidth(0.2);doc.line(marginL,y+7,marginL+contentW,y+7)
-          doc.setFontSize(7.5);doc.setFont('helvetica','bold');doc.setTextColor(...row.rgb);doc.text(row.label,marginL+3,y+4.8)
-          doc.setFont('helvetica','normal');doc.setTextColor(71,85,105);doc.text(row.range,marginL+48,y+4.8);doc.text(row.prognosis,marginL+80,y+4.8)
-          if(isA){doc.setFont('helvetica','bold');doc.setTextColor(...row.rgb);doc.text('Pasien ini',pageW-marginR-3,y+4.8,{align:'right'})}
-          y+=7
-        }); y+=8
+        const barX = mL+50, barY = y+24, barW = cW-50-8
+        doc.setFillColor(226,232,240); doc.roundedRect(barX, barY, barW, 2.5, 1.25, 1.25, 'F')
+        doc.setFillColor(...catRgb)
+        doc.roundedRect(barX, barY, Math.min((item.total/42)*barW, barW), 2.5, 1.25, 1.25, 'F')
+        y += 38
 
-        // 15 items
-        doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(100,116,139)
-        doc.text('RINCIAN 15 ITEM PEMERIKSAAN',marginL,y); y+=5
-        doc.setFillColor(241,245,249); doc.rect(marginL,y,contentW,6,'F')
-        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(100,116,139)
-        doc.text('Kode',marginL+3,y+4.2); doc.text('Domain',marginL+18,y+4.2); doc.text('Jawaban',marginL+85,y+4.2); doc.text('Skor',pageW-marginR-3,y+4.2,{align:'right'}); y+=6
+        if (item.vanPositif && item.vanPositif.length > 0) {
+          checkNewPage(22)
+          doc.setFillColor(...lightR); doc.setDrawColor(252,165,165); doc.setLineWidth(0.3)
+          doc.roundedRect(mL, y, cW, 18, 3, 3, 'FD')
+          doc.setFontSize(8); doc.setFont('helvetica','bold'); doc.setTextColor(...red)
+          doc.text('⚠ Curiga Large Vessel Occlusion (LVO)', mL+5, y+6.5)
+          doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(153,27,27)
+          const vanFull = item.vanPositif.map(v => v === 'V' ? 'Visual' : v === 'A' ? 'Aphasia' : 'Neglect').join(', ')
+          const lvoText = 'Komponen VAN positif: ' + vanFull + '. Mengindikasikan kemungkinan oklusi pembuluh darah besar. Evaluasi lanjutan direkomendasikan.'
+          const lvoLines = doc.splitTextToSize(lvoText, cW-10)
+          doc.text(lvoLines, mL+5, y+12)
+          y += 24
+        }
 
-        item.details.forEach((d,i)=>{
-          if(y>pageH-40){doc.addPage();y=20}
-          // Tambah tinggi baris jika ada info VAN/motorik positif
-          const hasVanInfo = d.van && !d.isTDN && d.score >= 1
-          const hasMotorInfo = d.motorik && !d.isTDN && d.score >= 1
-          const hasNote = d.isTDN && d.tdnNote
-          const extraRows = (hasVanInfo ? 1 : 0) + (hasMotorInfo ? 1 : 0)
-          const rowH = hasNote ? 14 : (extraRows > 0 ? 9 + extraRows * 8 : 9)
+        checkNewPage(12)
+        doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(...gray)
+        doc.text('KLASIFIKASI KEPARAHAN', mL, y); y += 5
 
-          if(i%2===0&&!d.isTDN){doc.setFillColor(248,250,252);doc.rect(marginL,y,contentW,rowH,'F')}
-          if(d.isTDN){doc.setFillColor(243,244,255);doc.rect(marginL,y,contentW,rowH,'F')}
-          doc.setDrawColor(226,232,240);doc.setLineWidth(0.15);doc.line(marginL,y+rowH,marginL+contentW,y+rowH)
-          doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(...blueRgb);doc.text(d.code,marginL+3,y+5.8)
-          doc.setFont('helvetica','bold');doc.setTextColor(30,41,59)
-          const labelTxt=doc.splitTextToSize(d.label,62);doc.text(labelTxt[0],marginL+18,y+5.8)
+        const sevData = [
+          {label:'Ringan',      range:'0 - 4',   prog:'Baik',        rgb:[22,163,74]},
+          {label:'Sedang',      range:'5 - 14',  prog:'Sedang',      rgb:[202,138,4]},
+          {label:'Berat',       range:'15 - 24', prog:'Kurang baik', rgb:[234,88,12]},
+          {label:'Sangat Berat',range:'25 - 42', prog:'Buruk',       rgb:[220,38,38]}
+        ]
+        fillRect(mL, y, cW, 6, 241,245,249)
+        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(...gray)
+        doc.text('Kategori', mL+3, y+4.2)
+        doc.text('Rentang', mL+48, y+4.2)
+        doc.text('Prognosis', mL+80, y+4.2)
+        doc.text('Status', pageW-mR-3, y+4.2, { align:'right' })
+        y += 6
 
-          // VAN/Motorik indicator di PDF — seragam biru
-          if(d.van){
-            doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(...blueRgb)
-            doc.text('[VAN-'+d.van+']',marginL+18,y+10)
+        sevData.forEach(row => {
+          checkNewPage(8)
+          const isA = item.category === row.label
+          if (isA) { const lc = row.rgb.map(c=>Math.min(255,c+215)); fillRect(mL,y,cW,7,...lc) }
+          drawLine(mL, y+7, mL+cW)
+          doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(...row.rgb)
+          doc.text(row.label, mL+3, y+4.8)
+          doc.setFont('helvetica','normal'); doc.setTextColor(...dark)
+          doc.text(row.range, mL+48, y+4.8)
+          doc.text(row.prog, mL+80, y+4.8)
+          if (isA) {
+            doc.setFont('helvetica','bold'); doc.setTextColor(...row.rgb)
+            doc.text('▶ Pasien ini', pageW-mR-3, y+4.8, { align:'right' })
           }
-          if(d.motorik){
-            doc.setFontSize(6.5);doc.setFont('helvetica','bold');doc.setTextColor(...blueRgb)
-            const motorikX = d.van ? marginL+36 : marginL+18
-            doc.text('[Motorik]', motorikX, y+10)
+          y += 7
+        })
+        y += 8
+
+        checkNewPage(12)
+        doc.setFontSize(7.5); doc.setFont('helvetica','bold'); doc.setTextColor(...gray)
+        doc.text('RINCIAN 15 ITEM PEMERIKSAAN', mL, y); y += 5
+
+        fillRect(mL, y, cW, 6, 241, 245, 249)
+        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(...gray)
+        doc.text('Kode', mL+3, y+4.2)
+        doc.text('Domain', mL+18, y+4.2)
+        doc.text('Jawaban', mL+82, y+4.2)
+        doc.text('Skor', pageW-mR-3, y+4.2, { align:'right' })
+        y += 6
+
+        item.details.forEach((d, i) => {
+          const answerLines = d.isTDN
+            ? (d.tdnNote ? doc.splitTextToSize('"' + d.tdnNote + '"', 55) : ['Tidak ada keterangan'])
+            : doc.splitTextToSize(d.answer, 55)
+          const hasExtra = (d.van && !d.isTDN && d.score >= 1) || (d.motorik && !d.isTDN && d.score >= 1)
+          const baseH = Math.max(9, 5 + answerLines.length * 3.5)
+          const rowH = baseH + (hasExtra ? 8 : 0)
+
+          checkNewPage(rowH + 2)
+
+          if (i % 2 === 0 && !d.isTDN) fillRect(mL, y, cW, rowH, 248, 250, 252)
+          if (d.isTDN) fillRect(mL, y, cW, rowH, 239, 246, 255)
+          drawLine(mL, y+rowH, mL+cW)
+
+          doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(...blue)
+          doc.text(d.code, mL+3, y+5.5)
+
+          const labelLines = doc.splitTextToSize(d.label, 58)
+          doc.setFont('helvetica','bold'); doc.setTextColor(...dark)
+          doc.text(labelLines[0], mL+18, y+5.5)
+
+          let badgeY2 = y + 9
+          if (d.van) {
+            doc.setFontSize(6); doc.setFont('helvetica','bold'); doc.setTextColor(...blue)
+            doc.text('[VAN-'+d.van+']', mL+18, badgeY2); badgeY2 += 3.5
+          }
+          if (d.motorik) {
+            doc.setFontSize(6); doc.setFont('helvetica','bold'); doc.setTextColor(...blue)
+            doc.text('[Motorik]', mL+18, badgeY2)
           }
 
-          if(d.isTDN){
-            doc.setFont('helvetica','bold');doc.setFontSize(7);doc.setTextColor(...tdnRgb);doc.text('Tidak Dapat Dinilai',marginL+85,y+5.8)
-            if(hasNote){doc.setFont('helvetica','italic');doc.setFontSize(6.5);doc.setTextColor(37,99,235);const nt=doc.splitTextToSize('\u201c'+d.tdnNote+'\u201d',60);doc.text(nt[0],marginL+85,y+10.5)}
-            doc.setFillColor(219,234,254);doc.roundedRect(pageW-marginR-12,y+2,10,5,1,1,'F');doc.setFont('helvetica','bold');doc.setFontSize(6.5);doc.setTextColor(...blueRgb);doc.text('TDN',pageW-marginR-7,y+5.8,{align:'center'})
+          if (d.isTDN) {
+            doc.setFont('helvetica','bold'); doc.setFontSize(7); doc.setTextColor(...blue)
+            doc.text('Tidak Dapat Dinilai', mL+82, y+5.5)
+            if (d.tdnNote) {
+              doc.setFont('helvetica','italic'); doc.setFontSize(6.5); doc.setTextColor(37,99,235)
+              const noteLines = doc.splitTextToSize('"' + d.tdnNote + '"', 55)
+              doc.text(noteLines.slice(0,2), mL+82, y+9.5)
+            }
+            doc.setFillColor(...lightB)
+            doc.roundedRect(pageW-mR-13, y+2, 11, 5, 1, 1, 'F')
+            doc.setFont('helvetica','bold'); doc.setFontSize(6.5); doc.setTextColor(...blue)
+            doc.text('TDN', pageW-mR-7.5, y+5.8, { align:'center' })
           } else {
-            const ans=doc.splitTextToSize(d.answer,55);doc.setFont('helvetica','normal');doc.setFontSize(6.5);doc.setTextColor(71,85,105);doc.text(ans[0],marginL+85,y+5.8)
-            const sc=d.score;const scColor=sc===0?[22,163,74]:sc>=3?[220,38,38]:sc>=2?[234,88,12]:[37,99,235]
-            doc.setFont('helvetica','bold');doc.setFontSize(9);doc.setTextColor(...scColor);doc.text(String(sc),pageW-marginR-3,y+5.8,{align:'right'})
+            doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(...gray)
+            doc.text(answerLines.slice(0,3), mL+82, y+5.5)
 
-            // Info VAN positif di PDF
-            if(hasVanInfo){
-              const vanY = y + (d.van || d.motorik ? 13 : 9)
-              doc.setFillColor(219,234,254);doc.roundedRect(marginL+2,vanY,contentW-4,6,1,1,'F')
-              doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(...blueRgb)
-              doc.text('VAN '+d.van+' Positif — '+this.getVanKeterangan(d.van).substring(0,70),marginL+4,vanY+4.2)
+            const scColor = d.score === 0 ? green : d.score >= 3 ? red : d.score >= 2 ? orange : blue
+            doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(...scColor)
+            doc.text(String(d.score), pageW-mR-3, y+6.5, { align:'right' })
+
+            if (d.van && d.score >= 1) {
+              const infoY = y + baseH
+              fillRect(mL+2, infoY, cW-4, 6.5, 219, 234, 254)
+              doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(...blue)
+              const vanTxt = 'VAN '+d.van+' Positif — '+this.getVanKeterangan(d.van).substring(0,80)
+              doc.text(doc.splitTextToSize(vanTxt, cW-8)[0], mL+4, infoY+4.2)
             }
-            // Info Motorik positif di PDF
-            if(hasMotorInfo){
-              const motorY = y + (hasVanInfo ? 21 : (d.van || d.motorik ? 13 : 9))
-              doc.setFillColor(219,234,254);doc.roundedRect(marginL+2,motorY,contentW-4,6,1,1,'F')
-              doc.setFont('helvetica','bold');doc.setFontSize(6);doc.setTextColor(...blueRgb)
-              doc.text('Defisit Motorik — Skor '+d.score+': '+this.getMotorKeterangan(d.score),marginL+4,motorY+4.2)
+            if (d.motorik && d.score >= 1) {
+              const infoY2 = y + baseH + ((d.van && d.score >= 1) ? 7 : 0)
+              fillRect(mL+2, infoY2, cW-4, 6.5, 219, 234, 254)
+              doc.setFont('helvetica','bold'); doc.setFontSize(6); doc.setTextColor(...blue)
+              doc.text('Defisit Motorik — Skor '+d.score+': '+this.getMotorKeterangan(d.score), mL+4, infoY2+4.2)
             }
           }
-          y+=rowH
-        }); y+=10
+          y += rowH
+        })
+        y += 10
 
-        if(item.tdnCount>0){
-          if(y>pageH-30){doc.addPage();y=20}
-          doc.setFillColor(219,234,254);doc.setDrawColor(147,197,253);doc.setLineWidth(0.3);doc.roundedRect(marginL,y,contentW,14,3,3,'FD')
-          doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(...blueRgb);doc.text('Catatan TDN:',marginL+4,y+5.5)
-          doc.setFont('helvetica','normal');doc.setTextColor(30,64,175);doc.text(item.tdnCount+' item ditandai Tidak Dapat Dinilai (TDN) dan tidak dihitung dalam total skor.',marginL+4,y+10.5)
-          y+=20
+        if (item.tdnCount > 0) {
+          checkNewPage(18)
+          doc.setFillColor(...lightB); doc.setDrawColor(147,197,253); doc.setLineWidth(0.3)
+          doc.roundedRect(mL, y, cW, 14, 3, 3, 'FD')
+          doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(...blue)
+          doc.text('Catatan TDN:', mL+4, y+5.5)
+          doc.setFont('helvetica','normal'); doc.setTextColor(30,64,175)
+          doc.text(item.tdnCount+' item ditandai Tidak Dapat Dinilai (TDN) dan tidak dihitung dalam total skor.', mL+4, y+10.5)
+          y += 18
         }
 
-        // VAN summary di PDF
-        if(item.vanPositif && item.vanPositif.length > 0){
-          if(y>pageH-30){doc.addPage();y=20}
-          doc.setFillColor(219,234,254);doc.setDrawColor(147,197,253);doc.setLineWidth(0.3);doc.roundedRect(marginL,y,contentW,14,3,3,'FD')
-          doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(...blueRgb);doc.text('VAN Score — Komponen Positif: '+item.vanPositif.join(', '),marginL+4,y+5.5)
-          doc.setFont('helvetica','normal');doc.setTextColor(30,64,175);doc.text('Komponen VAN positif mengindikasikan kemungkinan oklusi pembuluh darah besar (LVO). Evaluasi lebih lanjut direkomendasikan.',marginL+4,y+10.5)
-          y+=20
+        if (item.vanPositif && item.vanPositif.length > 0) {
+          checkNewPage(20)
+          doc.setFillColor(...lightR); doc.setDrawColor(252,165,165); doc.setLineWidth(0.3)
+          doc.roundedRect(mL, y, cW, 16, 3, 3, 'FD')
+          doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(...red)
+          doc.text('⚠ VAN Score Positif — Curiga LVO', mL+4, y+5.5)
+          doc.setFont('helvetica','normal'); doc.setFontSize(6.5); doc.setTextColor(153,27,27)
+          const vanFull = item.vanPositif.map(v => v === 'V' ? 'Visual' : v === 'A' ? 'Aphasia' : 'Neglect').join(', ')
+          const lvoSummaryLines = doc.splitTextToSize('Komponen positif: ' + vanFull + '. VAN Score positif mengindikasikan kemungkinan oklusi pembuluh darah besar (LVO). Evaluasi lanjutan dan tindakan segera direkomendasikan.', cW-8)
+          doc.text(lvoSummaryLines.slice(0,2), mL+4, y+10.5)
+          y += 22
         }
 
-        if(y>pageH-20){doc.addPage();y=20}
-        doc.setDrawColor(226,232,240);doc.setLineWidth(0.3);doc.line(marginL,y,pageW-marginR,y);y+=5
-        doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(148,163,184)
-        doc.text('Dibuat otomatis oleh SMART NIHSS - RSUP Fatmawati',marginL,y)
-        doc.text('Halaman 1',pageW-marginR,y,{align:'right'})
-        doc.save('NIHSS_Laporan_'+Date.now()+'.pdf')
-      } catch(err) {
-        console.error('PDF error:',err)
-        alert('Gagal membuat PDF. Silakan coba lagi.')
+        checkNewPage(10)
+        drawLine(mL, y, pageW-mR); y += 5
+        doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(...gray)
+        doc.text('Dibuat otomatis oleh SMART NIHSS — RSUP Fatmawati', mL, y)
+        doc.text('Hal. 1', pageW-mR, y, { align:'right' })
+
+        const ts = new Date().toISOString().slice(0,19).replace(/[T:]/g,'-')
+        doc.save('NIHSS_Laporan_' + ts + '.pdf')
+
+      } catch (err) {
+        console.error('PDF error:', err)
+        alert('Gagal membuat PDF: ' + err.message + '\nSilakan coba lagi atau refresh halaman.')
       } finally {
         this.pdfLoading = false
       }
     },
 
-    saveHistory() { try { localStorage.setItem('nihss_v4',JSON.stringify(this.history)) } catch(e){} },
-    loadHistory() { try { const s=localStorage.getItem('nihss_v4'); if(s) this.history=JSON.parse(s) } catch(e){ this.history=[] } },
+    saveHistory() {
+      try { localStorage.setItem('nihss_v4', JSON.stringify(this.history)) } catch(e) {}
+    },
+    loadHistory() {
+      try {
+        const s = localStorage.getItem('nihss_v4')
+        if (s) this.history = JSON.parse(s)
+      } catch(e) { this.history = [] }
+    },
   }
 }
 </script>
